@@ -1,0 +1,24 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - tests
+
+    # Level of rule strictness (0-10)
+    level: 5
+
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::lockForUpdate\(\)#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::increment\(\)#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::decrement\(\)#'
+
+    excludePaths:
+        - vendor
+        - storage
+        - bootstrap/cache
+
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+
