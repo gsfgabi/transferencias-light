@@ -28,9 +28,10 @@ class LoginForm extends Form
         // Tentar autenticar diretamente
         if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
             // Verificar se o usuário existe para dar mensagem específica
-            $user = \App\Models\User::where('email', $this->email)->first();
+            // Usar select apenas do campo necessário para otimizar
+            $userExists = \App\Models\User::where('email', $this->email)->exists();
             
-            if (!$user) {
+            if (!$userExists) {
                 throw ValidationException::withMessages([
                     'form.email' => __('messages.error.user_not_found'),
                 ]);
@@ -40,6 +41,9 @@ class LoginForm extends Form
                 ]);
             }
         }
+        
+        // Limpar cache de permissões após login para garantir dados atualizados
+        \Illuminate\Support\Facades\Artisan::call('permission:cache-reset');
     }
 
 }

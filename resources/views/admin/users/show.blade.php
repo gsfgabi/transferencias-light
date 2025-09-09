@@ -13,12 +13,18 @@
                     <h1 class="text-2xl font-bold text-gray-900">{{ $user->name }}</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <form method="POST" action="{{ route('admin.login-as', $user) }}">
-                        @csrf
-                        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium" onclick="return confirm('Deseja fazer login como este usuário?')">
-                            Login como Usuário
-                        </button>
-                    </form>
+                    <a href="{{ route('admin.users.edit', $user) }}" class="inline-flex items-center bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Editar Usuário
+                    </a>
+                    <button onclick="loginAsUser('{{ $user->id }}', '{{ $user->name }}')" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                        </svg>
+                        Login como Usuário
+                    </button>
                 </div>
             </div>
         </div>
@@ -147,4 +153,27 @@
         </div>
     </div>
 </div>
+
+<script>
+// Função para login como usuário
+function loginAsUser(userId, userName) {
+    confirmLoginAsUser(userName).then((result) => {
+        if (result.isConfirmed) {
+            // Criar form e enviar
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/login-as/${userId}`;
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+            
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
 @endsection

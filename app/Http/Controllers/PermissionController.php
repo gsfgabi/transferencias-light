@@ -32,12 +32,18 @@ class PermissionController extends Controller
     public function updateRolePermissions(Request $request, Role $role)
     {
         $request->validate([
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'integer|exists:permissions,id'
         ]);
 
+        // Buscar as permissões pelos IDs
+        $permissions = [];
+        if ($request->permissions) {
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
+        }
+
         // Sincronizar permissões da role
-        $role->syncPermissions($request->permissions ?? []);
+        $role->syncPermissions($permissions);
 
         return redirect()->route('admin.permissions.index')
             ->with('success', __('messages.success.permission_updated'));
@@ -79,6 +85,21 @@ class PermissionController extends Controller
 
         return redirect()->route('admin.permissions.index')
             ->with('success', 'Permissão deletada com sucesso!');
+    }
+
+    public function updatePermission (Request $request, Permission $permission)
+    {
+        $request->validate([
+            'name' => 'required|string|unique:permissions,name,' . $permission->id,
+            'description' => 'nullable|string|max:255'
+        ]);
+
+        $permission->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('admin.permissions.index')
+            ->with('success', __('messages.success.permission_updated'));
     }
 
     /**

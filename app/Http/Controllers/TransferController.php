@@ -23,8 +23,7 @@ class TransferController extends Controller
 
     public function show()
     {
-        $user = Auth::user();
-        return view('livewire.transfer-form', compact('user'));
+        return view('transfer');
     }
 
 }

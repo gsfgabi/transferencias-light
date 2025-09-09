@@ -253,4 +253,69 @@ class AdminController extends Controller
         return redirect()->route('admin.users.show', $user)
             ->with('success', 'Usuário criado com sucesso!');
     }
+
+    /**
+     * Editar usuário
+     */
+    public function editUser(User $user)
+    {
+        $roles = \Spatie\Permission\Models\Role::all();
+        return view('admin.users.edit', compact('user', 'roles'));
+    }
+
+    /**
+     * Atualizar usuário
+     */
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'document' => 'required|string|unique:users,document,' . $user->id,
+            'role' => 'required|exists:roles,name',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'document' => $request->document,
+        ]);
+
+        // Atualizar role
+        $user->syncRoles([$request->role]);
+
+        return redirect()->route('admin.users.show', $user)
+            ->with('success', 'Usuário atualizado com sucesso!');
+    }
+
+    /**
+     * Excluir usuário
+     */
+    public function deleteUser(User $user)
+    {
+        // Verificar se é o próprio admin
+        if ($user->id === auth()->id()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Você não pode excluir sua própria conta.');
+        }
+
+        // Verificar se o usuário tem transações
+        $hasTransactions = $user->sentTransactions()->exists() || $user->receivedTransactions()->exists();
+        
+        if ($hasTransactions) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Não é possível excluir usuário que possui transações.');
+        }
+
+        // Excluir wallet se existir
+        if ($user->wallet) {
+            $user->wallet->delete();
+        }
+
+        // Excluir usuário
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Usuário excluído com sucesso!');
+    }
 }

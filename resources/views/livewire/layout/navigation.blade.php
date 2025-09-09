@@ -17,23 +17,31 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('transfer.form')" :active="request()->routeIs('transfer.form')" wire:navigate>
-                        {{ __('Transferir') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
-                        {{ __('Depositar') }}
-                    </x-nav-link>
-                    @if(auth()->user()->hasRole('admin'))
+                    @can('transfer.create')
+                        <x-nav-link :href="route('transfer.form')" :active="request()->routeIs('transfer.form')" wire:navigate>
+                            {{ __('Transferir') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('deposit.create')
+                        <x-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
+                            {{ __('Depositar') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('admin.users.view')
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
                             {{ __('Usuarios') }}
                         </x-nav-link>
+                    @endcan
+                    @can('admin.reports.view')
                         <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports')" wire:navigate>
                             {{ __('Relatórios') }}
                         </x-nav-link>
+                    @endcan
+                    @can('admin.permissions.view')
                         <x-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')" wire:navigate>
                             {{ __('Permissões') }}
                         </x-nav-link>
-                    @endif
+                    @endcan
                 </div>
             </div>
 
@@ -81,12 +89,31 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('transfer.form')" :active="request()->routeIs('transfer.form')" wire:navigate>
-                {{ __('Transferir') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
-                {{ __('Depositar') }}
-            </x-responsive-nav-link>
+            @can('transfer.create')
+                <x-responsive-nav-link :href="route('transfer.form')" :active="request()->routeIs('transfer.form')" wire:navigate>
+                    {{ __('Transferir') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('deposit.create')
+                <x-responsive-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
+                    {{ __('Depositar') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('admin.users.view')
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
+                    {{ __('Usuarios') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('admin.reports.view')
+                <x-responsive-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports')" wire:navigate>
+                    {{ __('Relatórios') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('admin.permissions.view')
+                <x-responsive-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')" wire:navigate>
+                    {{ __('Permissões') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

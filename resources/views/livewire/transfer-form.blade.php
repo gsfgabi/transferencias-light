@@ -1,20 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
 <div class="min-h-screen flex flex-col sm:justify-center items-center pt-24 sm:pt-16">
-        @if(session('admin_id'))
-            <div class="w-full sm:max-w-md mb-4">
-                <form method="POST" action="{{ route('admin.back') }}" class="inline">
-                    @csrf
-                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        Voltar ao Admin
-                    </button>
-                </form>
-            </div>
-        @endif
         <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800">💸 Transferência</h1>
@@ -128,10 +112,20 @@
                         @enderror
                     </div>
 
+                    <!-- Botão de Teste -->
+                    <button type="button"
+                            wire:click="testMethod"
+                            class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 rounded-lg mb-2"
+                            onclick="console.log('🧪 BOTÃO TESTE CLICADO!');">
+                        🧪 Teste Simples
+                    </button>
+
                     <!-- Botão de Transferência -->
-                    <button type="submit"
+                    <button type="button"
+                            wire:click="confirmTransfer"
                             class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
-                            wire:loading.attr="disabled">
+                            wire:loading.attr="disabled"
+                            onclick="console.log('🖱️ BOTÃO CLICADO!'); console.log('Dados do formulário:', {payee_email: document.getElementById('payee_email').value, amount: document.getElementById('amount').value});">
                         <span wire:loading.remove>💸 Transferir Agora</span>
                         <span wire:loading>Processando...</span>
                     </button>
@@ -150,11 +144,117 @@
                    class="block text-sm text-blue-600 hover:text-blue-800 underline">
                     ← Voltar ao Dashboard
                 </a>
-                <a href="{{ route('deposit.form') }}"
-                   class="block text-sm text-gray-600 hover:text-gray-800 underline">
-                    💳 Fazer Depósito
-                </a>
+                @can('deposit.create')
+                    <a href="{{ route('deposit.form') }}"
+                       class="block text-sm text-gray-600 hover:text-gray-800 underline">
+                        💳 Fazer Depósito
+                    </a>
+                @endcan
             </div>
-        </div>
     </div>
-@endsection
+</div>
+
+<script>
+console.log('=== INICIANDO SCRIPT JAVASCRIPT ===');
+
+// Aguardar o Livewire carregar completamente
+document.addEventListener('livewire:init', () => {
+    console.log('✅ Livewire inicializado com sucesso');
+    
+    // Aguardar o componente ser inicializado
+    setTimeout(() => {
+        console.log('Verificando $wire após inicialização...');
+        console.log('$wire disponível:', typeof $wire !== 'undefined');
+        
+        if (typeof $wire !== 'undefined') {
+            console.log('✅ $wire disponível!');
+        } else {
+            console.log('❌ $wire ainda não disponível - aguardando mais...');
+            // Tentar novamente após mais tempo
+            setTimeout(() => {
+                console.log('Segunda verificação - $wire disponível:', typeof $wire !== 'undefined');
+                
+                // Verificar se há componentes Livewire na página
+                const livewireComponents = document.querySelectorAll('[wire\\:id]');
+                console.log('Componentes Livewire encontrados:', livewireComponents.length);
+                livewireComponents.forEach((comp, index) => {
+                    console.log(`Componente ${index}:`, comp.getAttribute('wire:id'));
+                });
+                
+                // Tentar acessar o $wire de forma diferente
+                if (window.Livewire && window.Livewire.all) {
+                    console.log('Livewire.all disponível:', window.Livewire.all);
+                    const components = window.Livewire.all();
+                    console.log('Componentes Livewire ativos:', components.length);
+                    if (components.length > 0) {
+                        console.log('Primeiro componente:', components[0]);
+                        window.$wire = components[0];
+                        console.log('$wire definido manualmente:', typeof window.$wire !== 'undefined');
+                    }
+                }
+            }, 1000);
+        }
+    }, 1000);
+    
+    Livewire.on('confirm-transfer', (event) => {
+        console.log('🎯 Evento confirm-transfer recebido!');
+        console.log('Evento completo:', event);
+        
+        const data = event[0];
+        if (data) {
+            console.log('Dados do evento:', data);
+            
+            // Verificar se SweetAlert2 está disponível
+            if (typeof Swal !== 'undefined' && typeof confirmTransfer === 'function') {
+                console.log('Chamando SweetAlert...');
+                confirmTransfer(data.amount, data.recipient).then((result) => {
+                    if (result.isConfirmed) {
+                        console.log('Usuário confirmou, chamando transfer...');
+                        // Verificar se $wire está disponível antes de usar
+                        if (typeof $wire !== 'undefined') {
+                            $wire.call('transfer');
+                        } else {
+                            console.error('❌ $wire não está disponível!');
+                            // Tentar usar Livewire diretamente
+                            if (typeof Livewire !== 'undefined') {
+                                console.log('Tentando usar Livewire diretamente...');
+                                Livewire.dispatch('transfer');
+                            } else {
+                                console.error('❌ Livewire também não está disponível!');
+                            }
+                        }
+                    } else {
+                        console.log('Usuário cancelou');
+                    }
+                });
+            } else {
+                console.log('SweetAlert não disponível, chamando transfer diretamente');
+                if (typeof $wire !== 'undefined') {
+                    $wire.call('transfer');
+                } else {
+                    console.error('❌ $wire não está disponível!');
+                }
+            }
+        }
+    });
+    
+    // Adicionar listener para erros do Livewire
+    Livewire.on('exception', (event) => {
+        console.error('❌ ERRO NO LIVEWIRE:', event);
+    });
+    
+    console.log('✅ Todos os listeners configurados');
+});
+
+// Verificar se o DOM está carregado
+if (document.readyState === 'loading') {
+    console.log('⏳ DOM ainda carregando...');
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('✅ DOM carregado');
+    });
+} else {
+    console.log('✅ DOM já carregado');
+}
+
+console.log('=== FIM SCRIPT JAVASCRIPT ===');
+</script>

@@ -31,7 +31,7 @@ class DepositForm extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function deposit()
+    public function confirmDeposit()
     {
         $this->validate();
 
@@ -44,7 +44,26 @@ class DepositForm extends Component
             ]);
         }
 
+        // Emitir evento para mostrar confirmação
+        $this->dispatch('confirm-deposit', [
+            'amount' => $this->amount
+        ]);
+    }
+
+    public function deposit()
+    {
         try {
+            $this->validate();
+
+            $user = Auth::user();
+
+            // Verificar se é administrador
+            if ($user->hasRole('admin')) {
+                throw ValidationException::withMessages([
+                    'amount' => [__('messages.error.admin_cannot_deposit')]
+                ]);
+            }
+
             DB::transaction(function () use ($user) {
                 $amount = $this->amount;
 
@@ -67,9 +86,11 @@ class DepositForm extends Component
                 ]);
             });
 
-            session()->flash('success', __('messages.success.deposit_completed'));
+            session()->flash('success', __('messages.success.deposit_completed') . ' Valor: R$ ' . number_format($this->amount, 2, ',', '.'));
             $this->reset(['amount']);
             
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Erro ao processar depósito', [
                 'user_id' => Auth::id(),

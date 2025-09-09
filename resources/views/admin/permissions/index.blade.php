@@ -13,8 +13,11 @@
                     <h1 class="text-2xl font-bold text-gray-900">{{ __('messages.titles.permissions') }}</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button onclick="openCreatePermissionModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
-                        + Nova Permissão
+                    <button onclick="openCreatePermissionModal()" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Nova Permissão
                     </button>
                 </div>
             </div>
@@ -156,7 +159,7 @@
                                                name="permissions[]"
                                                value="{{ $permission->id }}"
                                                class="permission-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                        <span class="ml-2 text-sm text-gray-700">{{ $permission->name }}</span>
+                                        <span class="ml-2 text-sm text-gray-700">{{ __('messages.permissions.' . str_replace('.', '_', $permission->name)) }}</span>
                                     </label>
                                 @endforeach
                             </div>
@@ -233,6 +236,9 @@
 
 <script>
 function openEditRoleModal(roleId, roleName, currentPermissions) {
+    console.log('Opening modal for role:', roleId, roleName);
+    console.log('Current permissions:', currentPermissions);
+    
     document.getElementById('editRoleTitle').textContent = `Editar Permissões - ${roleName}`;
     document.getElementById('editRoleForm').action = `/admin/permissions/role/${roleId}`;
 
@@ -246,6 +252,9 @@ function openEditRoleModal(roleId, roleName, currentPermissions) {
         const checkbox = document.querySelector(`input[name="permissions[]"][value="${permissionId}"]`);
         if (checkbox) {
             checkbox.checked = true;
+            console.log('Checked permission:', permissionId);
+        } else {
+            console.log('Checkbox not found for permission:', permissionId);
         }
     });
 

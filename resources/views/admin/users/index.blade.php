@@ -13,7 +13,10 @@
                     <h1 class="text-2xl font-bold text-gray-900">{{ __('messages.titles.users') }}</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('admin.users.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                    <a href="{{ route('admin.users.create') }}" class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
                         Criar Usuário
                     </a>
                 </div>
@@ -80,9 +83,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @foreach($user->roles as $role)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            {{ $role->name === 'admin' ? 'bg-red-100 text-red-800' : 
-                                               ($role->name === 'common-user' ? 'bg-blue-100 text-blue-800' : 
-                                               ($role->name === 'merchant' ? 'bg-purple-100 text-purple-800' : 
+                                            {{ $role->name === 'admin' ? 'bg-red-100 text-red-800' :
+                                               ($role->name === 'common-user' ? 'bg-blue-100 text-blue-800' :
+                                               ($role->name === 'merchant' ? 'bg-purple-100 text-purple-800' :
                                                ($role->name === 'support' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'))) }}">
                                             {{ __('messages.roles.' . str_replace('-', '_', $role->name)) }}
                                         </span>
@@ -95,15 +98,27 @@
                                     {{ $user->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    <a href="{{ route('admin.users.show', $user) }}" class="text-blue-600 hover:text-blue-900">
-                                        Ver
+                                    <a href="{{ route('admin.users.show', $user) }}" class="inline-flex items-center text-blue-600 hover:text-blue-900" title="Visualizar">
+                                        <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
                                     </a>
-                                    <form method="POST" action="{{ route('admin.login-as', $user) }}" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-green-600 hover:text-green-900" onclick="return confirm('Deseja fazer login como este usuário?')">
-                                            Login
-                                        </button>
-                                    </form>
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="inline-flex items-center text-yellow-600 hover:text-yellow-900" title="Editar">
+                                        <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </a>
+                                    <button onclick="deleteUser('{{ $user->id }}', '{{ $user->name }}')" class="inline-flex items-center text-red-600 hover:text-red-900" title="Excluir">
+                                        <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                    <button onclick="loginAsUser('{{ $user->id }}', '{{ $user->name }}')" class="inline-flex items-center text-green-600 hover:text-green-900" title="Login como usuário">
+                                        <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                                        </svg>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -120,4 +135,54 @@
         </div>
     </div>
 </div>
+
+<script>
+// Função para excluir usuário
+function deleteUser(userId, userName) {
+    confirmDeleteUser(userName).then((result) => {
+        if (result.isConfirmed) {
+            // Criar form e enviar
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/users/${userId}`;
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+
+            const methodField = document.createElement('input');
+            methodField.type = 'hidden';
+            methodField.name = '_method';
+            methodField.value = 'DELETE';
+
+            form.appendChild(csrfToken);
+            form.appendChild(methodField);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+// Função para login como usuário
+function loginAsUser(userId, userName) {
+    confirmLoginAsUser(userName).then((result) => {
+        if (result.isConfirmed) {
+            // Criar form e enviar
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/login-as/${userId}`;
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
 @endsection

@@ -25,6 +25,9 @@ Route::prefix('admin')->middleware(['auth', 'permission:admin.users.view'])->gro
     Route::get('/users/create', [App\Http\Controllers\AdminController::class, 'createUser'])->name('admin.users.create');
     Route::post('/users', [App\Http\Controllers\AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::get('/users/{user}', [App\Http\Controllers\AdminController::class, 'userShow'])->name('admin.users.show');
+    Route::get('/users/{user}/edit', [App\Http\Controllers\AdminController::class, 'editUser'])->name('admin.users.edit');
+    Route::put('/users/{user}', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('/users/{user}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
     Route::get('/reports', [App\Http\Controllers\AdminController::class, 'reports'])->name('admin.reports');
     Route::post('/login-as/{user}', [App\Http\Controllers\AdminController::class, 'loginAsUser'])->name('admin.login-as');
     
@@ -39,6 +42,11 @@ Route::prefix('admin')->middleware(['auth', 'permission:admin.users.view'])->gro
 // Rota para voltar ao admin (não precisa de permissão específica, apenas verifica sessão)
 Route::post('/admin/back-to-admin', [App\Http\Controllers\AdminController::class, 'backToAdmin'])->name('admin.back');
 
+// Rota de teste do Livewire
+Route::get('/test-livewire', function () {
+    return view('test-livewire');
+});
+
 // Rotas protegidas para depósito e transferência
 Route::middleware(['auth'])->group(function () {
     // Visualização - permitida para todos os usuários autenticados
@@ -48,5 +56,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('transfer.form');
     
 });
+
+// Rota de teste sem middleware para debug
+Route::get('/transfer-debug', [TransferController::class, 'show'])
+    ->name('transfer.debug');
 
 require __DIR__.'/auth.php';
