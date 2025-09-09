@@ -25,10 +25,20 @@ class LoginForm extends Form
      */
     public function authenticate(): void
     {
+        // Tentar autenticar diretamente
         if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-            throw ValidationException::withMessages([
-                'form.email' => 'As credenciais fornecidas não coincidem com nossos registros.',
-            ]);
+            // Verificar se o usuário existe para dar mensagem específica
+            $user = \App\Models\User::where('email', $this->email)->first();
+            
+            if (!$user) {
+                throw ValidationException::withMessages([
+                    'form.email' => __('messages.error.user_not_found'),
+                ]);
+            } else {
+                throw ValidationException::withMessages([
+                    'form.password' => __('messages.error.wrong_password'),
+                ]);
+            }
         }
     }
 

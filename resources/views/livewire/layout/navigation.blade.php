@@ -1,6 +1,6 @@
 {{-- Componente Livewire tradicional --}}
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-50">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -23,6 +23,17 @@
                     <x-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
                         {{ __('Depositar') }}
                     </x-nav-link>
+                    @if(auth()->user()->hasRole('admin'))
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
+                            {{ __('Usuarios') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports')" wire:navigate>
+                            {{ __('Relatórios') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')" wire:navigate>
+                            {{ __('Permissões') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

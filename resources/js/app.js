@@ -1,9 +1,12 @@
 import './bootstrap';
 
-// Start Livewire
-import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
+// Import Alpine.js
+import Alpine from 'alpinejs';
 
+// Make Alpine available globally
 window.Alpine = Alpine;
-Livewire.start();
+
+// Start Alpine
+Alpine.start();
 
 

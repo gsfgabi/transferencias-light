@@ -12,6 +12,17 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                    @if(session('admin_id'))
+                        <form method="POST" action="{{ route('admin.back') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Voltar ao Admin
+                            </button>
+                        </form>
+                    @endif
                     <div class="text-right">
                         <p class="text-sm text-gray-500">Saldo</p>
                         <p class="text-lg font-semibold text-gray-900">R$ {{ number_format($user->balance, 2, ',', '.') }}</p>

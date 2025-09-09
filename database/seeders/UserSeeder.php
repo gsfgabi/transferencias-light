@@ -16,33 +16,59 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Usuário Comum
-        $commonUser = User::create([
-            'name' => 'João da Silva',
-            'email' => 'joao@example.com',
-            'document' => '11122233344', 
-            'type' => 'common',
-            'password' => Hash::make('password'),
-        ]);
-        $commonUser->wallet()->create(['balance' => 1000.00]); 
+        $commonUser = User::firstOrCreate(
+            ['email' => 'joao@example.com'],
+            [
+                'name' => 'João da Silva',
+                'document' => '11122233344', 
+                'password' => Hash::make('password'),
+            ]
+        );
+        if (!$commonUser->wallet) {
+            $commonUser->wallet()->create(['balance' => 1000.00]);
+        }
+        $commonUser->assignRole('common-user');
 
         // Usuário Lojista
-        $merchantUser = User::create([
-            'name' => 'Loja do Zé',
-            'email' => 'loja@example.com',
-            'document' => '12345678000199', 
-            'type' => 'merchant',
-            'password' => Hash::make('password'),
-        ]);
-        $merchantUser->wallet()->create(['balance' => 500.00]); 
+        $merchantUser = User::firstOrCreate(
+            ['email' => 'loja@example.com'],
+            [
+                'name' => 'Loja do Zé',
+                'document' => '12345678000199', 
+                'password' => Hash::make('password'),
+            ]
+        );
+        if (!$merchantUser->wallet) {
+            $merchantUser->wallet()->create(['balance' => 500.00]);
+        }
+        $merchantUser->assignRole('merchant');
 
         // Outro Usuário Comum
-        $anotherCommonUser = User::create([
-            'name' => 'Maria Oliveira',
-            'email' => 'maria@example.com',
-            'document' => '55566677788', 
-            'type' => 'common',
-            'password' => Hash::make('password'),
-        ]);
-        $anotherCommonUser->wallet()->create(['balance' => 200.00]); 
+        $anotherCommonUser = User::firstOrCreate(
+            ['email' => 'maria@example.com'],
+            [
+                'name' => 'Maria Oliveira',
+                'document' => '55566677788', 
+                'password' => Hash::make('password'),
+            ]
+        );
+        if (!$anotherCommonUser->wallet) {
+            $anotherCommonUser->wallet()->create(['balance' => 200.00]);
+        }
+        $anotherCommonUser->assignRole('common-user');
+
+        // Usuário Admin
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin Sistema',
+                'document' => '99988877766',
+                'password' => Hash::make('password'),
+            ]
+        );
+        if (!$adminUser->wallet) {
+            $adminUser->wallet()->create(['balance' => 0.00]);
+        }
+        $adminUser->assignRole('admin'); 
     }
 }

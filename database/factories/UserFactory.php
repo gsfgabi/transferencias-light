@@ -27,7 +27,6 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'document' => fake()->unique()->numerify('###########'), // CPF
-            'type' => fake()->randomElement(['common', 'merchant']),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -49,9 +48,9 @@ class UserFactory extends Factory
      */
     public function common(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'type' => 'common',
-        ]);
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('common-user');
+        });
     }
 
     /**
@@ -60,8 +59,39 @@ class UserFactory extends Factory
     public function merchant(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'merchant',
             'document' => fake()->unique()->numerify('##############'), // CNPJ
-        ]);
+        ])->afterCreating(function ($user) {
+            $user->assignRole('merchant');
+        });
+    }
+
+    /**
+     * Create an admin user.
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('admin');
+        });
+    }
+
+    /**
+     * Create a support user.
+     */
+    public function support(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('support');
+        });
+    }
+
+    /**
+     * Create a basic user.
+     */
+    public function basic(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('user');
+        });
     }
 }

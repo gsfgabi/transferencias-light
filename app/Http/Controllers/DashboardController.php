@@ -16,6 +16,11 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
+        // Redirecionar administradores para o painel admin
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
         // Buscar dados para o dashboard
         $sentTransactions = $user->sentTransactions()->latest()->take(3)->get();
         $receivedTransactions = $user->receivedTransactions()->latest()->take(3)->get();

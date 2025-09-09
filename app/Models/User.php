@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use App\Models\Wallet;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +25,6 @@ class User extends Authenticatable
         'name',
         'email',
         'document',
-        'type',
         'password',
     ];
 
@@ -105,7 +105,7 @@ class User extends Authenticatable
      */
     public function isCommonUser(): bool
     {
-        return $this->type === 'common';
+        return $this->hasRole('common-user');
     }
 
     /**
@@ -113,7 +113,31 @@ class User extends Authenticatable
      */
     public function isMerchant(): bool
     {
-        return $this->type === 'merchant';
+        return $this->hasRole('merchant');
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    /**
+     * Check if the user is support.
+     */
+    public function isSupport(): bool
+    {
+        return $this->hasRole('support');
+    }
+
+    /**
+     * Check if the user is a basic user.
+     */
+    public function isBasicUser(): bool
+    {
+        return $this->hasRole('user');
     }
 
     /**
@@ -122,6 +146,30 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Get the user's type based on their primary role.
+     */
+    public function getTypeAttribute(): string
+    {
+        if ($this->hasRole('admin')) {
+            return 'admin';
+        }
+        if ($this->hasRole('support')) {
+            return 'support';
+        }
+        if ($this->hasRole('common-user')) {
+            return 'common';
+        }
+        if ($this->hasRole('merchant')) {
+            return 'merchant';
+        }
+        if ($this->hasRole('user')) {
+            return 'user';
+        }
+        
+        return 'user'; // Default fallback
     }
 
     /**

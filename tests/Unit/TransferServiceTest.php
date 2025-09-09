@@ -1,168 +1,146 @@
 <?php
 
-namespace Tests\Unit;
-
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Services\TransferService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
-class TransferServiceTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->transferService = new TransferService();
+});
 
-    protected TransferService $transferService;
+test('successful transfer between common users', function () {
+    // Mock HTTP responses
+    Http::fake([
+        'util.devi.tools/api/v2/authorize' => Http::response(['message' => 'Autorizado'], 200),
+        'util.devi.tools/api/v1/notify' => Http::response(['message' => 'Enviado'], 200),
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->transferService = new TransferService();
-    }
+    // Create users with wallets
+    $sender = User::factory()->common()->create();
+    $payee = User::factory()->common()->create();
+    
+    Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
+    Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
 
-    public function test_successful_transfer_between_common_users()
-    {
-        // Mock HTTP responses
-        Http::fake([
-            'util.devi.tools/api/v2/authorize' => Http::response(['message' => 'Autorizado'], 200),
-            'util.devi.tools/api/v1/notify' => Http::response(['message' => 'Enviado'], 200),
-        ]);
+    $result = $this->transferService->processTransfer($sender, $payee, 25.00);
 
-        // Create users with wallets
-        $sender = User::factory()->create(['type' => 'common']);
-        $payee = User::factory()->create(['type' => 'common']);
-        
-        Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
-        Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
+    expect($result['success'])->toBeTrue();
+    expect($result['message'])->toBe('Transferência realizada com sucesso!');
 
-        $result = $this->transferService->processTransfer($sender, $payee, 25.00);
+    // Check balances
+    $sender->refresh();
+    $payee->refresh();
+    expect($sender->balance)->toBe(75.00);
+    expect($payee->balance)->toBe(75.00);
 
-        $this->assertTrue($result['success']);
-        $this->assertEquals('Transferência realizada com sucesso!', $result['message']);
+    // Check transaction record
+    $transaction = Transaction::where('sender_id', $sender->id)
+        ->where('payee_id', $payee->id)
+        ->first();
+    
+    expect($transaction)->not->toBeNull();
+    expect($transaction->amount)->toEqual(25.0);
+    expect($transaction->status)->toBe('completed');
+});
 
-        // Check balances
-        $sender->refresh();
-        $payee->refresh();
-        $this->assertEquals(75.00, $sender->balance);
-        $this->assertEquals(75.00, $payee->balance);
+test('merchant cannot send money', function () {
+    $sender = User::factory()->merchant()->create();
+    $payee = User::factory()->common()->create();
+    
+    Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
+    Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
 
-        // Check transaction record
-        $transaction = Transaction::where('sender_id', $sender->id)
-            ->where('payee_id', $payee->id)
-            ->first();
-        
-        $this->assertNotNull($transaction);
-        $this->assertEquals(25.00, $transaction->amount);
-        $this->assertEquals('completed', $transaction->status);
-    }
+    $result = $this->transferService->processTransfer($sender, $payee, 25.00);
 
-    public function test_merchant_cannot_send_money()
-    {
-        $sender = User::factory()->create(['type' => 'merchant']);
-        $payee = User::factory()->create(['type' => 'common']);
-        
-        Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
-        Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
+    expect($result['success'])->toBeFalse();
+    expect($result['message'])->toBe('Lojistas não podem realizar transferências.');
+});
 
-        $result = $this->transferService->processTransfer($sender, $payee, 25.00);
+test('insufficient balance transfer', function () {
+    $sender = User::factory()->common()->create();
+    $payee = User::factory()->common()->create();
+    
+    Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 10.00]);
+    Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
 
-        $this->assertFalse($result['success']);
-        $this->assertEquals('Lojistas não podem realizar transferências.', $result['message']);
-    }
+    $result = $this->transferService->processTransfer($sender, $payee, 25.00);
 
-    public function test_insufficient_balance_transfer()
-    {
-        $sender = User::factory()->create(['type' => 'common']);
-        $payee = User::factory()->create(['type' => 'common']);
-        
-        Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 10.00]);
-        Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
+    expect($result['success'])->toBeFalse();
+    expect($result['message'])->toBe('Saldo insuficiente para realizar a transferência.');
+});
 
-        $result = $this->transferService->processTransfer($sender, $payee, 25.00);
+test('cannot transfer to self', function () {
+    $user = User::factory()->common()->create();
+    Wallet::factory()->create(['user_id' => $user->id, 'balance' => 100.00]);
 
-        $this->assertFalse($result['success']);
-        $this->assertEquals('Saldo insuficiente para realizar a transferência.', $result['message']);
-    }
+    $result = $this->transferService->processTransfer($user, $user, 25.00);
 
-    public function test_cannot_transfer_to_self()
-    {
-        $user = User::factory()->create(['type' => 'common']);
-        Wallet::factory()->create(['user_id' => $user->id, 'balance' => 100.00]);
+    expect($result['success'])->toBeFalse();
+    expect($result['message'])->toBe('Não é possível transferir para si mesmo.');
+});
 
-        $result = $this->transferService->processTransfer($user, $user, 25.00);
+test('authorization service failure', function () {
+    Http::fake([
+        'util.devi.tools/api/v2/authorize' => Http::response(['message' => 'Não autorizado'], 200),
+    ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertEquals('Não é possível transferir para si mesmo.', $result['message']);
-    }
+    $sender = User::factory()->common()->create();
+    $payee = User::factory()->common()->create();
+    
+    Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
+    Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
 
-    public function test_authorization_service_failure()
-    {
-        Http::fake([
-            'util.devi.tools/api/v2/authorize' => Http::response(['message' => 'Não autorizado'], 200),
-        ]);
+    $result = $this->transferService->processTransfer($sender, $payee, 25.00);
 
-        $sender = User::factory()->create(['type' => 'common']);
-        $payee = User::factory()->create(['type' => 'common']);
-        
-        Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
-        Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
+    expect($result['success'])->toBeFalse();
+    expect($result['message'])->toBe('Transferência não autorizada pelo serviço externo.');
+});
 
-        $result = $this->transferService->processTransfer($sender, $payee, 25.00);
+test('authorization service unavailable', function () {
+    Http::fake([
+        'util.devi.tools/api/v2/authorize' => Http::response([], 500),
+    ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertEquals('Transferência não autorizada pelo serviço externo.', $result['message']);
-    }
+    $sender = User::factory()->common()->create();
+    $payee = User::factory()->common()->create();
+    
+    Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
+    Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
 
-    public function test_authorization_service_unavailable()
-    {
-        Http::fake([
-            'util.devi.tools/api/v2/authorize' => Http::response([], 500),
-        ]);
+    $result = $this->transferService->processTransfer($sender, $payee, 25.00);
 
-        $sender = User::factory()->create(['type' => 'common']);
-        $payee = User::factory()->create(['type' => 'common']);
-        
-        Wallet::factory()->create(['user_id' => $sender->id, 'balance' => 100.00]);
-        Wallet::factory()->create(['user_id' => $payee->id, 'balance' => 50.00]);
+    expect($result['success'])->toBeFalse();
+    expect($result['message'])->toBe('Serviço de autorização indisponível.');
+});
 
-        $result = $this->transferService->processTransfer($sender, $payee, 25.00);
+test('get user transaction history', function () {
+    $user = User::factory()->common()->create();
+    $otherUser = User::factory()->common()->create();
+    
+    Wallet::factory()->create(['user_id' => $user->id, 'balance' => 100.00]);
+    Wallet::factory()->create(['user_id' => $otherUser->id, 'balance' => 50.00]);
 
-        $this->assertFalse($result['success']);
-        $this->assertEquals('Serviço de autorização indisponível.', $result['message']);
-    }
+    // Create some transactions
+    Transaction::factory()->create([
+        'sender_id' => $user->id,
+        'payee_id' => $otherUser->id,
+        'amount' => 25.00,
+        'status' => 'completed'
+    ]);
 
+    Transaction::factory()->create([
+        'sender_id' => $otherUser->id,
+        'payee_id' => $user->id,
+        'amount' => 15.00,
+        'status' => 'completed'
+    ]);
 
-    public function test_get_user_transaction_history()
-    {
-        $user = User::factory()->create(['type' => 'common']);
-        $otherUser = User::factory()->create(['type' => 'common']);
-        
-        Wallet::factory()->create(['user_id' => $user->id, 'balance' => 100.00]);
-        Wallet::factory()->create(['user_id' => $otherUser->id, 'balance' => 50.00]);
+    $history = $this->transferService->getUserTransactionHistory($user);
 
-        // Create some transactions
-        Transaction::factory()->create([
-            'sender_id' => $user->id,
-            'payee_id' => $otherUser->id,
-            'amount' => 25.00,
-            'status' => 'completed'
-        ]);
-
-        Transaction::factory()->create([
-            'sender_id' => $otherUser->id,
-            'payee_id' => $user->id,
-            'amount' => 15.00,
-            'status' => 'completed'
-        ]);
-
-        $history = $this->transferService->getUserTransactionHistory($user);
-
-        $this->assertCount(1, $history['sent']);
-        $this->assertCount(1, $history['received']);
-        $this->assertEquals(25.00, $history['total_sent']);
-        $this->assertEquals(15.00, $history['total_received']);
-    }
-}
+    expect($history['sent'])->toHaveCount(1);
+    expect($history['received'])->toHaveCount(1);
+    expect($history['total_sent'])->toEqual(25.0);
+    expect($history['total_received'])->toEqual(15.0);
+});
