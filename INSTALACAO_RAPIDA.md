@@ -38,8 +38,8 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# 4. Crie o banco SQLite
-touch database/database.sqlite
+# 4. Crie o banco Mysql
+touch database/database.mysql
 
 # 5. Execute as migrações
 php artisan migrate
@@ -60,15 +60,19 @@ php artisan serve
 Após a instalação, use estes dados para testar:
 
 **Usuário Comum:**
-- Email: `usuario@teste.com`
+- Email: `joao@example.com`
+- Senha: `password`
+
+**Usuário Comum:**
+- Email: `maria@example.com`
 - Senha: `password`
 
 **Lojista:**
-- Email: `lojista@teste.com`
+- Email: `loja@example.com`
 - Senha: `password`
 
 **Admin:**
-- Email: `admin@teste.com`
+- Email: `admin@example.com`
 - Senha: `password`
 
 ## 🆘 Problemas Comuns
@@ -98,12 +102,3 @@ php artisan migrate:fresh --seed
 npm run build
 ```
 
-## 📞 Precisa de Ajuda?
-
-- Consulte o [README completo](README.md)
-- Verifique a seção [Solução de Problemas](README.md#-solução-de-problemas)
-- Abra uma [Issue](https://github.com/seu-usuario/transferencias-light/issues)
-
----
-
-**🎉 Pronto! Seu sistema está funcionando!**

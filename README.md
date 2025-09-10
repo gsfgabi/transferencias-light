@@ -90,12 +90,12 @@ O **Transferências Light** é uma aplicação web que simula um sistema de tran
    ```
 
 5. **Configure o banco de dados**
-   
+
    **Para SQLite (padrão):**
    ```bash
    touch database/database.sqlite
    ```
-   
+
    **Para MySQL/PostgreSQL:**
    - Edite o arquivo `.env` com suas credenciais
    - Exemplo para MySQL:
@@ -387,17 +387,17 @@ LOG_LEVEL=debug
 Após executar `php artisan db:seed`, você terá:
 
 **Usuário Comum:**
-- Email: `usuario@teste.com`
+- Email: `joao@example.com`
 - Senha: `password`
 - CPF: `123.456.789-00`
 
 **Lojista:**
-- Email: `lojista@teste.com`
+- Email: `loja@example.com`
 - Senha: `password`
 - CNPJ: `12.345.678/0001-90`
 
 **Admin:**
-- Email: `admin@teste.com`
+- Email: `admin@example.com`
 - Senha: `password`
 
 ### Saldo Inicial
@@ -511,72 +511,5 @@ php artisan test --coverage   # Testes com cobertura
    ```
 4. **Configure o servidor web (Apache/Nginx)**
 
-## 🎯 Roadmap
 
-### Próximas Funcionalidades
-- [ ] Sistema de notificações push
-- [ ] Relatórios avançados
-- [ ] API REST completa
-- [ ] App mobile
-- [ ] Integração com PIX
-- [ ] Sistema de cashback
-- [ ] Transferências agendadas
 
-### Melhorias Técnicas
-- [ ] Testes de performance
-- [ ] Monitoramento de logs
-- [ ] CI/CD pipeline
-- [ ] Documentação da API
-- [ ] Métricas de uso
-
-## 🤝 Contribuição
-
-1. **Fork o projeto**
-2. **Crie uma branch para sua feature**
-   ```bash
-   git checkout -b feature/nova-funcionalidade
-   ```
-3. **Commit suas mudanças**
-   ```bash
-   git commit -m 'Adiciona nova funcionalidade'
-   ```
-4. **Push para a branch**
-   ```bash
-   git push origin feature/nova-funcionalidade
-   ```
-5. **Abra um Pull Request**
-
-### Padrões de Código
-- Siga o PSR-12 para PHP
-- Use nomes descritivos para variáveis e funções
-- Adicione testes para novas funcionalidades
-- Documente mudanças importantes
-
-## 📞 Suporte
-
-### Problemas Conhecidos
-- Consulte a seção [Solução de Problemas](#-solução-de-problemas)
-- Verifique os [Issues](https://github.com/seu-usuario/transferencias-light/issues)
-
-### Contato
-- **Email**: suporte@transferencias-light.com
-- **GitHub**: [Issues](https://github.com/seu-usuario/transferencias-light/issues)
-- **Documentação**: [Wiki](https://github.com/seu-usuario/transferencias-light/wiki)
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
-## 🎉 Agradecimentos
-
-- **Laravel** - Framework PHP
-- **Livewire** - Componentes reativos
-- **TailwindCSS** - Framework CSS
-- **AlpineJS** - Framework JavaScript
-- **Spatie** - Pacotes PHP úteis
-
----
-
-**Desenvolvido com ❤️ para facilitar transferências financeiras**

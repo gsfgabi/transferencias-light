@@ -20,12 +20,12 @@ class UserSeeder extends Seeder
             ['email' => 'joao@example.com'],
             [
                 'name' => 'João da Silva',
-                'document' => '11122233344', 
+                'document' => '11122233344',
                 'password' => Hash::make('password'),
             ]
         );
         if (!$commonUser->wallet) {
-            $commonUser->wallet()->create(['balance' => 1000.00]);
+            $commonUser->wallet()->create(['balance' => 100.00]);
         }
         $commonUser->assignRole('common-user');
 
@@ -34,12 +34,12 @@ class UserSeeder extends Seeder
             ['email' => 'loja@example.com'],
             [
                 'name' => 'Loja do Zé',
-                'document' => '12345678000199', 
+                'document' => '12345678000199',
                 'password' => Hash::make('password'),
             ]
         );
         if (!$merchantUser->wallet) {
-            $merchantUser->wallet()->create(['balance' => 500.00]);
+            $merchantUser->wallet()->create(['balance' => 100.00]);
         }
         $merchantUser->assignRole('merchant');
 
@@ -48,12 +48,12 @@ class UserSeeder extends Seeder
             ['email' => 'maria@example.com'],
             [
                 'name' => 'Maria Oliveira',
-                'document' => '55566677788', 
+                'document' => '55566677788',
                 'password' => Hash::make('password'),
             ]
         );
         if (!$anotherCommonUser->wallet) {
-            $anotherCommonUser->wallet()->create(['balance' => 200.00]);
+            $anotherCommonUser->wallet()->create(['balance' => 100.00]);
         }
         $anotherCommonUser->assignRole('common-user');
 
@@ -69,6 +69,6 @@ class UserSeeder extends Seeder
         if (!$adminUser->wallet) {
             $adminUser->wallet()->create(['balance' => 0.00]);
         }
-        $adminUser->assignRole('admin'); 
+        $adminUser->assignRole('admin');
     }
 }

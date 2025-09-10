@@ -88,22 +88,19 @@ $transactions->each(function($t) {
 
 | Tipo | Email | Senha | CPF/CNPJ | Saldo |
 |------|-------|-------|----------|-------|
-| Comum | `usuario@teste.com` | `password` | `123.456.789-00` | R$ 100,00 |
-| Lojista | `lojista@teste.com` | `password` | `12.345.678/0001-90` | R$ 100,00 |
-| Admin | `admin@teste.com` | `password` | `987.654.321-00` | R$ 100,00 |
+| Comum | `joao@example.com` | `password` | `111.222.333-44` | R$ 100,00 |
+| Lojista | `loja@example.com` | `password` | `123.456.78/0001-99` | R$ 100,00 |
+| Admin | `admin@example.com` | `password` | `999.888.777-66` | R$ 100,00 |
 
 ### CPFs/CNPJs Válidos para Teste
 
 **CPFs:**
 - `123.456.789-00` (Usuário Comum)
-- `987.654.321-00` (Admin)
+- `999.888.777-66` (Admin)
 - `111.222.333-44` (Válido para cadastro)
-- `555.666.777-88` (Válido para cadastro)
 
 **CNPJs:**
-- `12.345.678/0001-90` (Lojista)
-- `98.765.432/0001-10` (Válido para cadastro)
-- `11.222.333/0001-44` (Válido para cadastro)
+- `123.456.78/0001-99` (Lojista)
 
 ## 🧪 Testes Automatizados
 
@@ -184,14 +181,14 @@ memory_get_usage(true)
 1. **Crie vários usuários**
    ```bash
    php artisan tinker
-   
+
    # No tinker
    $users = [
        ['name' => 'João Silva', 'email' => 'joao@teste.com', 'document' => '111.111.111-11'],
        ['name' => 'Maria Santos', 'email' => 'maria@teste.com', 'document' => '222.222.222-22'],
        ['name' => 'Pedro Costa', 'email' => 'pedro@teste.com', 'document' => '333.333.333-33']
    ];
-   
+
    foreach($users as $userData) {
        $user = App\Models\User::create([
            'name' => $userData['name'],
@@ -200,7 +197,7 @@ memory_get_usage(true)
            'document' => $userData['document'],
            'type' => 'common'
        ]);
-       
+
        $user->wallet()->create(['balance' => 500.00]);
    }
    ```
@@ -211,9 +208,9 @@ memory_get_usage(true)
    $joao = App\Models\User::where('email', 'joao@teste.com')->first();
    $maria = App\Models\User::where('email', 'maria@teste.com')->first();
    $pedro = App\Models\User::where('email', 'pedro@teste.com')->first();
-   
+
    $transferService = app(App\Services\TransferService::class);
-   
+
    $transferService->transfer($joao, $maria, 100.00);
    $transferService->transfer($maria, $pedro, 50.00);
    $transferService->transfer($pedro, $joao, 25.00);
@@ -232,7 +229,7 @@ memory_get_usage(true)
    # No tinker
    $totalBalance = App\Models\Wallet::sum('balance');
    echo "Saldo total: R$ {$totalBalance}\n";
-   
+
    $totalTransactions = App\Models\Transaction::sum('amount');
    echo "Total transferido: R$ {$totalTransactions}\n";
    ```
