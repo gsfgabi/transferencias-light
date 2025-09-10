@@ -107,6 +107,13 @@ class TransferForm extends Component
             $sender = Auth::user();
             $payee = User::where('email', $this->payee_email)->first();
 
+            if (!$payee) {
+                Log::error('❌ Usuário recebedor não encontrado');
+                throw ValidationException::withMessages([
+                    'payee_email' => [__('messages.error.user_not_found')]
+                ]);
+            }
+
             Log::info('Usuários encontrados:', [
                 'sender' => [
                     'id' => $sender->id,
@@ -130,6 +137,9 @@ class TransferForm extends Component
                 session()->flash('success', __('messages.success.transfer_completed') . ' Valor: R$ ' . number_format($this->amount, 2, ',', '.'));
                 $this->reset(['payee_email', 'amount']);
                 Log::info('✅ Formulário resetado');
+                
+                // Forçar atualização da página para mostrar o novo saldo
+                $this->js('window.location.reload();');
             } else {
                 Log::error('❌ Transferência falhou:', $result);
                 throw ValidationException::withMessages([

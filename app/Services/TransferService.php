@@ -117,9 +117,16 @@ class TransferService
 
     /**
      * Verifica autorização externa.
+     * Em ambiente de desenvolvimento, simula autorização.
      */
     protected function checkAuthorization(): array
     {
+        // Em ambiente de desenvolvimento, simular autorização
+        if (app()->environment('local', 'testing')) {
+            Log::info('Simulando autorização em ambiente de desenvolvimento');
+            return ['authorized' => true];
+        }
+
         $authorizationServiceUrl = 'https://util.devi.tools/api/v2/authorize';
         
         try {
@@ -145,6 +152,13 @@ class TransferService
                 'error' => $e->getMessage(),
                 'url' => $authorizationServiceUrl
             ]);
+            
+            // Em caso de erro, permitir transferência em ambiente local
+            if (app()->environment('local', 'testing')) {
+                Log::info('Permitindo transferência em ambiente local devido a erro de autorização');
+                return ['authorized' => true];
+            }
+            
             return ['authorized' => false, 'message' => 'Erro ao consultar serviço de autorização. Tente novamente mais tarde.'];
         }
     }

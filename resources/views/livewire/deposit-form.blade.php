@@ -4,7 +4,7 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-24 sm:pt-16">
         <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
             <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">💰 Depósito</h1>
+                <h1 class="text-2xl font-bold text-gray-800">💰 {{ t('deposit') }}</h1>
                 <p class="text-gray-600">Adicione dinheiro à sua conta</p>
             </div>
 
@@ -30,11 +30,10 @@
                             </div>
                             <div class="ml-3">
                                 <h3 class="text-sm font-medium text-yellow-800">
-                                    Acesso Administrativo
+                                    {{ t('alerts.admin_access') }}
                                 </h3>
                                 <div class="mt-2 text-sm text-yellow-700">
-                                    <p>Como administrador, você pode visualizar este formulário, mas não pode realizar
-                                        depósitos.</p>
+                                    <p>{{ t('alerts.admin_cannot_deposit') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -43,14 +42,14 @@
 
                 <!-- Informações do Usuário -->
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h3 class="text-sm font-semibold text-blue-800 mb-2">👤 Suas Informações</h3>
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">👤 {{ t('alerts.user_info') }}</h3>
                     <div class="text-sm text-blue-700">
-                        <p><strong>Nome:</strong> {{ $user->name }}</p>
-                        <p><strong>Email:</strong> {{ $user->email }}</p>
+                        <p><strong>{{ t('name') }}:</strong> {{ $user->name }}</p>
+                        <p><strong>{{ t('email') }}:</strong> {{ $user->email }}</p>
                         @if (!$user->hasRole('admin'))
-                            <p><strong>Saldo Atual:</strong> R$ {{ number_format($user->balance, 2, ',', '.') }}</p>
+                            <p><strong>{{ t('current_balance') }}:</strong> R$ {{ number_format($user->balance, 2, ',', '.') }}</p>
                         @else
-                            <p><strong>Função:</strong> Administrador</p>
+                            <p><strong>{{ t('function') }}:</strong> {{ t_role('admin') }}</p>
                         @endif
                     </div>
                 </div>
@@ -63,7 +62,7 @@
                                 <span class="text-2xl">🚫</span>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800 mb-2">Acesso Restrito</h3>
-                            <p class="text-gray-600 mb-4">Administradores não podem realizar depósitos.</p>
+                            <p class="text-gray-600 mb-4">{{ t('alerts.admin_cannot_deposit') }}</p>
                             <div class="bg-gray-100 rounded-lg p-4">
                                 <p class="text-sm text-gray-500">Este formulário é apenas para visualização.</p>
                             </div>
@@ -75,15 +74,21 @@
                         <!-- Valor do Depósito -->
                         <div class="mb-6">
                             <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">
-                                💰 Valor do Depósito
+                                💰 {{ t('deposit_amount') }}
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <span class="text-gray-500 sm:text-sm">R$</span>
                                 </div>
-                                <input type="number" id="amount" wire:model="amount" step="0.01" min="0.01"
-                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('amount') border-red-500 @else border-gray-300 @enderror"
-                                    placeholder="0,00" required>
+                                <input type="number"
+                                       id="amount"
+                                       wire:model="amount"
+                                       step="0.01"
+                                       min="0.01"
+                                       max="10000.00"
+                                       class="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors @error('amount') border-red-500 @else border-gray-300 @enderror"
+                                       placeholder="0,00"
+                                       required>
                             </div>
                             @error('amount')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -91,10 +96,11 @@
                         </div>
 
                         <!-- Botão de Depósito -->
-                        <button type="button" wire:click="confirmDeposit"
-                            class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
-                            wire:loading.attr="disabled">
-                            <span wire:loading.remove>💳 Depositar Agora</span>
+                        <button type="button"
+                                wire:click="confirmDeposit"
+                                class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
+                                wire:loading.attr="disabled">
+                            <span wire:loading.remove>💰 Depositar Agora</span>
                             <span wire:loading>Processando...</span>
                         </button>
                     </form>
@@ -108,12 +114,14 @@
 
             <!-- Links -->
             <div class="mt-6 text-center space-y-2">
-                <a href="{{ route('dashboard') }}" class="block text-sm text-blue-600 hover:text-blue-800 underline">
-                    ← Voltar ao Dashboard
+                <a href="{{ route('dashboard') }}"
+                   class="block text-sm text-blue-600 hover:text-blue-800 underline">
+                    ← {{ t('back_to_dashboard') }}
                 </a>
                 @can('transfer.create')
-                    <a href="{{ route('transfer.form') }}" class="block text-sm text-gray-600 hover:text-gray-800 underline">
-                        💸 Fazer Transferência
+                    <a href="{{ route('transfer.form') }}"
+                       class="block text-sm text-gray-600 hover:text-gray-800 underline">
+                        💸 {{ t('transfer') }}
                     </a>
                 @endcan
             </div>
@@ -121,26 +129,32 @@
     </div>
 
     <script>
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('confirm-deposit', (event) => {
-                const data = event[0];
-                
-                // Verificar se SweetAlert2 está disponível
-                if (typeof Swal !== 'undefined' && typeof confirmDeposit === 'function') {
-                    confirmDeposit(data.amount).then((result) => {
-                        if (result.isConfirmed) {
+    document.addEventListener('livewire:init', () => {
+        console.log('✅ Livewire inicializado - Deposit Form');
+        
+        Livewire.on('confirm-deposit', (event) => {
+            console.log('🎯 Evento confirm-deposit recebido:', event);
+            
+            const data = event[0];
+            if (data && typeof Swal !== 'undefined') {
+                confirmDeposit(data.amount).then((result) => {
+                    if (result.isConfirmed) {
+                        console.log('✅ Usuário confirmou, executando deposit...');
+                        // Usar $wire.call() para chamar o método diretamente
+                        if (typeof $wire !== 'undefined') {
+                            console.log('Chamando $wire.call("deposit")...');
                             $wire.call('deposit');
+                        } else {
+                            console.error('❌ $wire não disponível');
                         }
-                    }).catch((error) => {
-                        console.error('Erro no SweetAlert:', error);
-                        // Fallback: chamar diretamente
-                        $wire.call('deposit');
-                    });
-                } else {
-                    // Fallback: chamar diretamente o método deposit
-                    $wire.call('deposit');
-                }
-            });
+                    } else {
+                        console.log('❌ Usuário cancelou');
+                    }
+                });
+            } else {
+                console.log('❌ SweetAlert não disponível ou dados inválidos');
+            }
         });
+    });
     </script>
 @endsection

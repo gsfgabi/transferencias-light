@@ -246,22 +246,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Card de Ajuda -->
-                <div class="bg-blue-50 rounded-lg border border-blue-200 p-6">
-                    <div class="flex items-start">
-                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                            <span class="text-blue-600">💡</span>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-semibold text-blue-900 mb-1">Ajuda Administrativa</h3>
-                            <p class="text-xs text-blue-700 mb-3">Use o menu lateral para acessar todas as funcionalidades administrativas.</p>
-                            <button class="text-xs text-blue-600 hover:text-blue-800 font-medium">
-                                Ver Documentação →
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

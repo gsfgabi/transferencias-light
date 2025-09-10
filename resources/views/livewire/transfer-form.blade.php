@@ -1,7 +1,7 @@
 <div class="min-h-screen flex flex-col sm:justify-center items-center pt-24 sm:pt-16">
         <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
             <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">💸 Transferência</h1>
+                <h1 class="text-2xl font-bold text-gray-800">💸 {{ t('transfer') }}</h1>
                 <p class="text-gray-600">Envie dinheiro para outros usuários</p>
             </div>
 
@@ -25,10 +25,10 @@
                             </div>
                             <div class="ml-3">
                                 <h3 class="text-sm font-medium text-yellow-800">
-                                    Acesso Administrativo
+                                    {{ t('alerts.admin_access') }}
                                 </h3>
                                 <div class="mt-2 text-sm text-yellow-700">
-                                    <p>Como administrador, você pode visualizar este formulário, mas não pode realizar transferências.</p>
+                                    <p>{{ t('alerts.admin_cannot_transfer') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -37,15 +37,15 @@
 
                 <!-- Informações do Usuário -->
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h3 class="text-sm font-semibold text-blue-800 mb-2">👤 Suas Informações</h3>
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">👤 {{ t('alerts.user_info') }}</h3>
                     <div class="text-sm text-blue-700">
-                        <p><strong>Nome:</strong> {{ $user->name }}</p>
-                        <p><strong>Email:</strong> {{ $user->email }}</p>
-                        <p><strong>Tipo:</strong> {{ $user->type === 'common' ? 'Usuário Comum' : ($user->type === 'merchant' ? 'Lojista' : 'Administrador') }}</p>
+                        <p><strong>{{ t('name') }}:</strong> {{ $user->name }}</p>
+                        <p><strong>{{ t('email') }}:</strong> {{ $user->email }}</p>
+                        <p><strong>{{ t('user_type') }}:</strong> {{ $user->type === 'common' ? t_role('common-user') : ($user->type === 'merchant' ? t_role('merchant') : t_role('admin')) }}</p>
                         @if(!$user->hasRole('admin'))
-                            <p><strong>Saldo Atual:</strong> R$ {{ number_format($user->balance, 2, ',', '.') }}</p>
+                            <p><strong>{{ t('current_balance') }}:</strong> R$ {{ number_format($user->balance, 2, ',', '.') }}</p>
                         @else
-                            <p><strong>Função:</strong> Administrador</p>
+                            <p><strong>{{ t('function') }}:</strong> {{ t_role('admin') }}</p>
                         @endif
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 <!-- Lojista não pode transferir -->
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                     <h3 class="text-sm font-semibold text-yellow-800 mb-2">⚠️ Restrição</h3>
-                    <p class="text-sm text-yellow-700">Lojistas só podem receber transferências, não podem enviar dinheiro.</p>
+                    <p class="text-sm text-yellow-700">{{ t('alerts.merchant_cannot_transfer') }}</p>
                 </div>
             @elseif ($user->hasRole('admin'))
                 <!-- Administrador não pode transferir -->
@@ -64,7 +64,7 @@
                             <span class="text-2xl">🚫</span>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">Acesso Restrito</h3>
-                        <p class="text-gray-600 mb-4">Administradores não podem realizar transferências.</p>
+                        <p class="text-gray-600 mb-4">{{ t('alerts.admin_cannot_transfer') }}</p>
                         <div class="bg-gray-100 rounded-lg p-4">
                             <p class="text-sm text-gray-500">Este formulário é apenas para visualização.</p>
                         </div>
@@ -92,7 +92,7 @@
                     <!-- Valor da Transferência -->
                     <div class="mb-6">
                         <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">
-                            💰 Valor da Transferência
+                            💰 {{ t('transfer_amount') }}
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -112,20 +112,11 @@
                         @enderror
                     </div>
 
-                    <!-- Botão de Teste -->
-                    <button type="button"
-                            wire:click="testMethod"
-                            class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 rounded-lg mb-2"
-                            onclick="console.log('🧪 BOTÃO TESTE CLICADO!');">
-                        🧪 Teste Simples
-                    </button>
-
                     <!-- Botão de Transferência -->
                     <button type="button"
                             wire:click="confirmTransfer"
                             class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
-                            wire:loading.attr="disabled"
-                            onclick="console.log('🖱️ BOTÃO CLICADO!'); console.log('Dados do formulário:', {payee_email: document.getElementById('payee_email').value, amount: document.getElementById('amount').value});">
+                            wire:loading.attr="disabled">
                         <span wire:loading.remove>💸 Transferir Agora</span>
                         <span wire:loading>Processando...</span>
                     </button>
@@ -142,12 +133,12 @@
             <div class="mt-6 text-center space-y-2">
                 <a href="{{ route('dashboard') }}"
                    class="block text-sm text-blue-600 hover:text-blue-800 underline">
-                    ← Voltar ao Dashboard
+                    ← {{ t('back_to_dashboard') }}
                 </a>
                 @can('deposit.create')
                     <a href="{{ route('deposit.form') }}"
                        class="block text-sm text-gray-600 hover:text-gray-800 underline">
-                        💳 Fazer Depósito
+                        💳 {{ t('make_deposit') }}
                     </a>
                 @endcan
             </div>
@@ -155,106 +146,31 @@
 </div>
 
 <script>
-console.log('=== INICIANDO SCRIPT JAVASCRIPT ===');
-
-// Aguardar o Livewire carregar completamente
 document.addEventListener('livewire:init', () => {
-    console.log('✅ Livewire inicializado com sucesso');
-    
-    // Aguardar o componente ser inicializado
-    setTimeout(() => {
-        console.log('Verificando $wire após inicialização...');
-        console.log('$wire disponível:', typeof $wire !== 'undefined');
-        
-        if (typeof $wire !== 'undefined') {
-            console.log('✅ $wire disponível!');
-        } else {
-            console.log('❌ $wire ainda não disponível - aguardando mais...');
-            // Tentar novamente após mais tempo
-            setTimeout(() => {
-                console.log('Segunda verificação - $wire disponível:', typeof $wire !== 'undefined');
-                
-                // Verificar se há componentes Livewire na página
-                const livewireComponents = document.querySelectorAll('[wire\\:id]');
-                console.log('Componentes Livewire encontrados:', livewireComponents.length);
-                livewireComponents.forEach((comp, index) => {
-                    console.log(`Componente ${index}:`, comp.getAttribute('wire:id'));
-                });
-                
-                // Tentar acessar o $wire de forma diferente
-                if (window.Livewire && window.Livewire.all) {
-                    console.log('Livewire.all disponível:', window.Livewire.all);
-                    const components = window.Livewire.all();
-                    console.log('Componentes Livewire ativos:', components.length);
-                    if (components.length > 0) {
-                        console.log('Primeiro componente:', components[0]);
-                        window.$wire = components[0];
-                        console.log('$wire definido manualmente:', typeof window.$wire !== 'undefined');
-                    }
-                }
-            }, 1000);
-        }
-    }, 1000);
+    console.log('✅ Livewire inicializado');
     
     Livewire.on('confirm-transfer', (event) => {
-        console.log('🎯 Evento confirm-transfer recebido!');
-        console.log('Evento completo:', event);
+        console.log('🎯 Evento confirm-transfer recebido:', event);
         
         const data = event[0];
-        if (data) {
-            console.log('Dados do evento:', data);
-            
-            // Verificar se SweetAlert2 está disponível
-            if (typeof Swal !== 'undefined' && typeof confirmTransfer === 'function') {
-                console.log('Chamando SweetAlert...');
-                confirmTransfer(data.amount, data.recipient).then((result) => {
-                    if (result.isConfirmed) {
-                        console.log('Usuário confirmou, chamando transfer...');
-                        // Verificar se $wire está disponível antes de usar
-                        if (typeof $wire !== 'undefined') {
-                            $wire.call('transfer');
-                        } else {
-                            console.error('❌ $wire não está disponível!');
-                            // Tentar usar Livewire diretamente
-                            if (typeof Livewire !== 'undefined') {
-                                console.log('Tentando usar Livewire diretamente...');
-                                Livewire.dispatch('transfer');
-                            } else {
-                                console.error('❌ Livewire também não está disponível!');
-                            }
-                        }
+        if (data && typeof Swal !== 'undefined') {
+            confirmTransfer(data.amount, data.recipient).then((result) => {
+                if (result.isConfirmed) {
+                    console.log('✅ Usuário confirmou, executando transfer...');
+                    // Usar $wire.call() para chamar o método diretamente
+                    if (typeof $wire !== 'undefined') {
+                        console.log('Chamando $wire.call("transfer")...');
+                        $wire.call('transfer');
                     } else {
-                        console.log('Usuário cancelou');
+                        console.error('❌ $wire não disponível');
                     }
-                });
-            } else {
-                console.log('SweetAlert não disponível, chamando transfer diretamente');
-                if (typeof $wire !== 'undefined') {
-                    $wire.call('transfer');
                 } else {
-                    console.error('❌ $wire não está disponível!');
+                    console.log('❌ Usuário cancelou');
                 }
-            }
+            });
+        } else {
+            console.log('❌ SweetAlert não disponível ou dados inválidos');
         }
     });
-    
-    // Adicionar listener para erros do Livewire
-    Livewire.on('exception', (event) => {
-        console.error('❌ ERRO NO LIVEWIRE:', event);
-    });
-    
-    console.log('✅ Todos os listeners configurados');
 });
-
-// Verificar se o DOM está carregado
-if (document.readyState === 'loading') {
-    console.log('⏳ DOM ainda carregando...');
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('✅ DOM carregado');
-    });
-} else {
-    console.log('✅ DOM já carregado');
-}
-
-console.log('=== FIM SCRIPT JAVASCRIPT ===');
 </script>

@@ -7,48 +7,48 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate>
+                    <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </a>
                     @can('transfer.create')
-                        <x-nav-link :href="route('transfer.form')" :active="request()->routeIs('transfer.form')" wire:navigate>
+                        <a href="{{ route('transfer.form') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('transfer.form') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
                             {{ __('Transferir') }}
-                        </x-nav-link>
+                        </a>
                     @endcan
                     @can('deposit.create')
-                        <x-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
+                        <a href="{{ route('deposit.form') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('deposit.form') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
                             {{ __('Depositar') }}
-                        </x-nav-link>
+                        </a>
                     @endcan
                     @can('admin.users.view')
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
-                            {{ __('Usuarios') }}
-                        </x-nav-link>
+                        <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.users.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
+                            {{ t('users') }}
+                        </a>
                     @endcan
                     @can('admin.reports.view')
-                        <x-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports')" wire:navigate>
-                            {{ __('Relatórios') }}
-                        </x-nav-link>
+                        <a href="{{ route('admin.reports') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.reports') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
+                            {{ t('reports') }}
+                        </a>
                     @endcan
                     @can('admin.permissions.view')
-                        <x-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')" wire:navigate>
-                            {{ __('Permissões') }}
-                        </x-nav-link>
+                        <a href="{{ route('admin.permissions.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.permissions.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
+                            {{ t('permissions') }}
+                        </a>
                     @endcan
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
+                    <div @click="open = ! open" class="cursor-pointer">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
 
@@ -58,17 +58,29 @@
                                 </svg>
                             </div>
                         </button>
-                    </x-slot>
+                    </div>
 
-                    <x-slot name="content">
-                        <!-- Authentication -->
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>
-                                {{ __('Sair') }}
-                            </x-dropdown-link>
-                        </button>
-                    </x-slot>
-                </x-dropdown>
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute z-50 mt-2 w-48 rounded-md shadow-lg ltr:origin-top-right rtl:origin-top-left end-0"
+                         style="display: none;"
+                         @click="open = false">
+                        <div class="rounded-md ring-1 ring-black ring-opacity-5 py-1 bg-white">
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                                @csrf
+                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                    {{ t('logout') }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Hamburger -->
@@ -86,33 +98,33 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+            <a href="{{ route('dashboard') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            </a>
             @can('transfer.create')
-                <x-responsive-nav-link :href="route('transfer.form')" :active="request()->routeIs('transfer.form')" wire:navigate>
+                <a href="{{ route('transfer.form') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('transfer.form') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
                     {{ __('Transferir') }}
-                </x-responsive-nav-link>
+                </a>
             @endcan
             @can('deposit.create')
-                <x-responsive-nav-link :href="route('deposit.form')" :active="request()->routeIs('deposit.form')" wire:navigate>
+                <a href="{{ route('deposit.form') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('deposit.form') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
                     {{ __('Depositar') }}
-                </x-responsive-nav-link>
+                </a>
             @endcan
             @can('admin.users.view')
-                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
-                    {{ __('Usuarios') }}
-                </x-responsive-nav-link>
+                <a href="{{ route('admin.users.index') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.users.*') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
+                    {{ t('users') }}
+                </a>
             @endcan
             @can('admin.reports.view')
-                <x-responsive-nav-link :href="route('admin.reports')" :active="request()->routeIs('admin.reports')" wire:navigate>
-                    {{ __('Relatórios') }}
-                </x-responsive-nav-link>
+                <a href="{{ route('admin.reports') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.reports') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
+                    {{ t('reports') }}
+                </a>
             @endcan
             @can('admin.permissions.view')
-                <x-responsive-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')" wire:navigate>
-                    {{ __('Permissões') }}
-                </x-responsive-nav-link>
+                <a href="{{ route('admin.permissions.index') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.permissions.*') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
+                    {{ t('permissions') }}
+                </a>
             @endcan
         </div>
 
@@ -125,11 +137,12 @@
 
             <div class="mt-3 space-y-1">
                 <!-- Authentication -->
-                <button wire:click="logout" class="w-full text-start">
-                    <x-responsive-nav-link>
-                        {{ __('Sair') }}
-                    </x-responsive-nav-link>
-                </button>
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    @csrf
+                    <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        {{ t('logout') }}
+                    </button>
+                </form>
             </div>
         </div>
     </div>

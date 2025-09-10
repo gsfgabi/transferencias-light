@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
@@ -38,6 +39,9 @@ class PermissionSeeder extends Seeder
             'admin.users.delete',
             'admin.transactions.view',
             'admin.transactions.manage',
+            'admin.permissions.view',
+            'admin.permissions.manage',
+            'admin.reports.view',
         ];
 
         foreach ($permissions as $permission) {
@@ -48,6 +52,8 @@ class PermissionSeeder extends Seeder
         $commonUserRole = Role::firstOrCreate(['name' => 'common-user']);
         $merchantRole = Role::firstOrCreate(['name' => 'merchant']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $supportRole = Role::firstOrCreate(['name' => 'support']);
+        $userRole = Role::firstOrCreate(['name' => 'user']);
 
         // Assign permissions to common users
         $commonUserRole->givePermissionTo([
@@ -61,11 +67,25 @@ class PermissionSeeder extends Seeder
 
         // Assign permissions to merchants
         $merchantRole->givePermissionTo([
-            'transfer.view',
             'transfer.history',
             'deposit.create',
             'deposit.view',
             'dashboard.view',
+        ]);
+
+        // Assign permissions to support
+        $supportRole->givePermissionTo([
+            'dashboard.view',
+            'admin.users.view',
+            'admin.transactions.view',
+            'admin.reports.view',
+        ]);
+
+        // Assign basic permissions to user
+        $userRole->givePermissionTo([
+            'dashboard.view',
+            'transfer.view',
+            'deposit.view',
         ]);
 
         // Assign all permissions to admin

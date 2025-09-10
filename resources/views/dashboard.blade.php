@@ -8,7 +8,7 @@
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <h1 class="text-2xl font-bold text-gray-900">Transferências Light</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">{{ t('app_name') }}</h1>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
@@ -21,12 +21,12 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                     </svg>
-                                    Voltar ao Admin
+                                    {{ t('back_to_admin') }}
                                 </button>
                             </form>
                         @endif
                         <div class="text-right">
-                            <p class="text-sm text-gray-500">Saldo</p>
+                            <p class="text-sm text-gray-500">{{ t('balance') }}</p>
                             <p class="text-lg font-semibold text-gray-900">R$
                                 {{ number_format($user->balance, 2, ',', '.') }}</p>
                         </div>
@@ -43,7 +43,7 @@
             <!-- Boas-vindas -->
             <div class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Olá, {{ $user->name }}!</h2>
-                <p class="text-gray-600">Gerencie suas transferências de forma simples e rápida</p>
+                <p class="text-gray-600">{{ t('dashboard_welcome') }}</p>
             </div>
 
             <!-- Grid Principal -->
@@ -59,7 +59,7 @@
                                         <span class="text-2xl">💰</span>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">Depósito</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900">{{ t('deposit') }}</h3>
                                         <p class="text-sm text-gray-500">Adicione dinheiro à sua conta</p>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                         <span class="text-2xl">💸</span>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">Transferência</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900">{{ t('transfer') }}</h3>
                                         <p class="text-sm text-gray-500">Envie dinheiro para outros usuários</p>
                                     </div>
                                 </div>
@@ -211,7 +211,7 @@
                                             class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ $user->type === 'common' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-purple-100 text-purple-800 border border-purple-200' }}">
                                             <span
                                                 class="w-2 h-2 rounded-full mr-2 {{ $user->type === 'common' ? 'bg-blue-500' : 'bg-purple-500' }}"></span>
-                                            {{ $user->type === 'common' ? 'Usuário Comum' : 'Lojista' }}
+                                            {{ $user->type === 'common' ? t_role('common-user') : t_role('merchant') }}
                                         </span>
                                     </div>
                                 </div>
@@ -323,23 +323,6 @@
                                             {{ $stats['received_transactions'] }}</p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card de Ajuda -->
-                    <div class="bg-blue-50 rounded-lg border border-blue-200 p-6">
-                        <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                <span class="text-blue-600">💡</span>
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-semibold text-blue-900 mb-1">Precisa de Ajuda?</h3>
-                                <p class="text-xs text-blue-700 mb-3">Consulte nossa documentação para tirar suas dúvidas.
-                                </p>
-                                <button class="text-xs text-blue-600 hover:text-blue-800 font-medium">
-                                    Ver Documentação →
-                                </button>
                             </div>
                         </div>
                     </div>

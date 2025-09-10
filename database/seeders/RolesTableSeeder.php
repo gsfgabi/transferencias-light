@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesTableSeeder extends Seeder
 {
@@ -37,6 +38,7 @@ class RolesTableSeeder extends Seeder
                     'admin.transactions.manage',
                     'admin.permissions.manage',
                     'admin.reports.view',
+                    'admin.permissions.view',
                 ]
             ],
             'support' => [
@@ -104,7 +106,7 @@ class RolesTableSeeder extends Seeder
             // Assign permissions
             if ($roleData['permissions'] === 'all') {
                 // Super admin gets all permissions
-                $role->givePermissionTo(Permission::all());
+                $role->givePermissionTo(\Spatie\Permission\Models\Permission::all());
             } else {
                 // Assign specific permissions
                 foreach ($roleData['permissions'] as $permission) {

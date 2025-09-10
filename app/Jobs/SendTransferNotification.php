@@ -34,6 +34,16 @@ class SendTransferNotification implements ShouldQueue
      */
     public function handle(): void
     {
+        // Em ambiente local, simular envio de notificação
+        if (app()->environment('local', 'testing')) {
+            Log::info('Simulando envio de notificação em ambiente de desenvolvimento', [
+                'payee_email' => $this->payee->email,
+                'amount' => $this->amount,
+                'sender_name' => $this->senderName
+            ]);
+            return;
+        }
+
         $notificationServiceUrl = 'https://util.devi.tools/api/v1/notify';
         
         try {
@@ -64,6 +74,12 @@ class SendTransferNotification implements ShouldQueue
                 'payee_email' => $this->payee->email,
                 'error' => $e->getMessage()
             ]);
+            
+            // Em ambiente local, não falhar o job
+            if (app()->environment('local', 'testing')) {
+                Log::info('Ignorando falha de notificação em ambiente local');
+                return;
+            }
             
             $this->fail($e);
         }

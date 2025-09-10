@@ -21,15 +21,16 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        // Usar JavaScript para forçar redirecionamento
+        $this->js('window.location.href = "' . route('dashboard') . '"');
     }
 }; ?>
 
 <div>
     <!-- Header -->
     <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Bem-vindo ao {{ env('APP_NAME') }}</h2>
-        <p class="text-gray-600">Faça login para acessar sua conta</p>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ __('messages.titles.welcome', ['app' => env('APP_NAME')]) }}</h2>
+        <p class="text-gray-600">{{ __('messages.titles.login_to_access') }}</p>
     </div>
 
     <!-- Session Status -->

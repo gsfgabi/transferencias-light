@@ -69,6 +69,9 @@ return [
         'reports' => 'Relatórios',
         'profile' => 'Perfil',
         'settings' => 'Configurações',
+        'app_name' => 'Transferências Light',
+        'welcome' => 'Bem-vindo ao :app',
+        'login_to_access' => 'Faça login para acessar sua conta',
     ],
 
     // Botões
@@ -103,6 +106,10 @@ return [
         'confirm_password' => 'Confirmar Senha',
         'current_password' => 'Senha Atual',
         'new_password' => 'Nova Senha',
+        'transfer_amount' => 'Valor da Transferência',
+        'current_balance' => 'Saldo Atual',
+        'user_type' => 'Tipo',
+        'function' => 'Função',
     ],
 
     // Navegação
@@ -119,6 +126,36 @@ return [
         'profile' => 'Perfil',
         'settings' => 'Configurações',
         'logout' => 'Sair',
+        'back_to_dashboard' => 'Voltar ao Dashboard',
+        'make_deposit' => 'Fazer Depósito',
+        'back_to_admin' => 'Voltar ao Admin',
+    ],
+
+    // Ações gerais
+    'logout' => 'Sair',
+
+    // Filtros e Busca
+    'filters' => [
+        'search_by_name_or_email' => 'Buscar por nome ou email',
+        'filter_by_type' => 'Filtrar por tipo',
+        'type_to_search' => 'Digite para buscar...',
+        'all_types' => 'Todos os tipos',
+        'filter' => 'Filtrar',
+        'clear' => 'Limpar',
+        'search' => 'Buscar',
+        'no_results' => 'Nenhum resultado encontrado',
+        'results_found' => 'resultados encontrados',
+        'try_different_filters' => 'Tente usar filtros diferentes',
+        'no_users_yet' => 'Ainda não há usuários cadastrados',
+    ],
+
+    // Campos de tabela
+    'table' => [
+        'user' => 'Usuário',
+        'type' => 'Tipo',
+        'balance' => 'Saldo',
+        'created_at' => 'Criado em',
+        'actions' => 'Ações',
     ],
 
     // Status
@@ -137,6 +174,16 @@ return [
         'common_user' => 'Usuário Comum',
         'merchant' => 'Lojista',
         'user' => 'Usuário Básico',
+    ],
+
+    // Avisos e Alertas
+    'alerts' => [
+        'admin_access' => 'Acesso Administrativo',
+        'admin_cannot_transfer' => 'Como administrador, você pode visualizar este formulário, mas não pode realizar transferências.',
+        'admin_cannot_deposit' => 'Como administrador, você pode visualizar este formulário, mas não pode realizar depósitos.',
+        'merchant_cannot_transfer' => 'Lojistas só podem receber transferências, não podem enviar dinheiro.',
+        'user_info' => 'Suas Informações',
+        'balance' => 'Saldo',
     ],
 
     // Permissões

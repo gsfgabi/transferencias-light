@@ -49,11 +49,31 @@ class AdminController extends Controller
     /**
      * Lista de usuários
      */
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::with('roles', 'wallet')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = User::with('roles', 'wallet');
+
+        // Filtro por busca (nome ou email)
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filtro por tipo de usuário (role)
+        if ($request->filled('type')) {
+            $type = $request->get('type');
+            $query->whereHas('roles', function($q) use ($type) {
+                $q->where('name', $type);
+            });
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(20);
+
+        // Manter os parâmetros de filtro na paginação
+        $users->appends($request->query());
 
         return view('admin.users.index', compact('users'));
     }
