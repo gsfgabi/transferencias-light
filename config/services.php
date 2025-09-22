@@ -35,4 +35,23 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | External APIs Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for external APIs used by the application
+    |
+    */
+
+    'authorization' => [
+        'url' => env('AUTHORIZATION_API_URL', 'https://util.devi.tools/api/v2/authorize'),
+        'timeout' => env('AUTHORIZATION_API_TIMEOUT', 10),
+    ],
+
+    'notification' => [
+        'url' => env('NOTIFICATION_API_URL', 'https://util.devi.tools/api/v1/notify'),
+        'timeout' => env('NOTIFICATION_API_TIMEOUT', 10),
+    ],
+
 ];

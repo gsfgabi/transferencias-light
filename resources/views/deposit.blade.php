@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <livewire:transfer.transfer-form-component />
+    <livewire:deposit.deposit-form-component />
 @endsection

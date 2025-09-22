@@ -23,7 +23,9 @@ class TransferController extends Controller
 
     public function show()
     {
-        return view('transfer');
+        return view('transfer', [
+            'component' => \App\Livewire\Transfer\TransferFormComponent::class
+        ]);
     }
 
 }

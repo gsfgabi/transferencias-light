@@ -4,7 +4,7 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-24 sm:pt-16">
         <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
             <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">💰 {{ t('deposit') }}</h1>
+                <h1 class="text-2xl font-bold text-gray-800">💰 {{ __('messages.navigation.deposit') }}</h1>
                 <p class="text-gray-600">Adicione dinheiro à sua conta</p>
             </div>
 
@@ -30,10 +30,10 @@
                             </div>
                             <div class="ml-3">
                                 <h3 class="text-sm font-medium text-yellow-800">
-                                    {{ t('alerts.admin_access') }}
+                                    {{ __('messages.alerts.admin_access') }}
                                 </h3>
                                 <div class="mt-2 text-sm text-yellow-700">
-                                    <p>{{ t('alerts.admin_cannot_deposit') }}</p>
+                                    <p>{{ __('messages.alerts.admin_cannot_deposit') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -42,14 +42,14 @@
 
                 <!-- Informações do Usuário -->
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h3 class="text-sm font-semibold text-blue-800 mb-2">👤 {{ t('alerts.user_info') }}</h3>
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">👤 {{ __('messages.alerts.user_info') }}</h3>
                     <div class="text-sm text-blue-700">
-                        <p><strong>{{ t('name') }}:</strong> {{ $user->name }}</p>
-                        <p><strong>{{ t('email') }}:</strong> {{ $user->email }}</p>
+                        <p><strong>{{ __('messages.forms.name') }}:</strong> {{ $user->name }}</p>
+                        <p><strong>{{ __('messages.forms.email') }}:</strong> {{ $user->email }}</p>
                         @if (!$user->hasRole('admin'))
-                            <p><strong>{{ t('current_balance') }}:</strong> R$ {{ number_format($user->balance, 2, ',', '.') }}</p>
+                            <p><strong>{{ __('messages.forms.current_balance') }}:</strong> R$ {{ number_format($user->balance, 2, ',', '.') }}</p>
                         @else
-                            <p><strong>{{ t('function') }}:</strong> {{ t_role('admin') }}</p>
+                            <p><strong>{{ __('messages.forms.function') }}:</strong> {{ __('messages.roles.admin') }}</p>
                         @endif
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                                 <span class="text-2xl">🚫</span>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800 mb-2">Acesso Restrito</h3>
-                            <p class="text-gray-600 mb-4">{{ t('alerts.admin_cannot_deposit') }}</p>
+                            <p class="text-gray-600 mb-4">{{ __('messages.alerts.admin_cannot_deposit') }}</p>
                             <div class="bg-gray-100 rounded-lg p-4">
                                 <p class="text-sm text-gray-500">Este formulário é apenas para visualização.</p>
                             </div>
@@ -74,7 +74,7 @@
                         <!-- Valor do Depósito -->
                         <div class="mb-6">
                             <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">
-                                💰 {{ t('deposit_amount') }}
+                                💰 {{ __('messages.forms.deposit_amount') }}
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -116,12 +116,12 @@
             <div class="mt-6 text-center space-y-2">
                 <a href="{{ route('dashboard') }}"
                    class="block text-sm text-blue-600 hover:text-blue-800 underline">
-                    ← {{ t('back_to_dashboard') }}
+                    ← {{ __('messages.navigation.back_to_dashboard') }}
                 </a>
                 @can('transfer.create')
                     <a href="{{ route('transfer.form') }}"
                        class="block text-sm text-gray-600 hover:text-gray-800 underline">
-                        💸 {{ t('transfer') }}
+                        💸 {{ __('messages.navigation.transfer') }}
                     </a>
                 @endcan
             </div>

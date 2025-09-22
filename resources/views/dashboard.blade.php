@@ -8,7 +8,7 @@
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <h1 class="text-2xl font-bold text-gray-900">{{ t('app_name') }}</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">{{ __('messages.app_name') }}</h1>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
@@ -21,12 +21,12 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                     </svg>
-                                    {{ t('back_to_admin') }}
+                                    {{ __('messages.navigation.back_to_admin') }}
                                 </button>
                             </form>
                         @endif
                         <div class="text-right">
-                            <p class="text-sm text-gray-500">{{ t('balance') }}</p>
+                            <p class="text-sm text-gray-500">{{ __('messages.forms.balance') }}</p>
                             <p class="text-lg font-semibold text-gray-900">R$
                                 {{ number_format($user->balance, 2, ',', '.') }}</p>
                         </div>
@@ -43,7 +43,7 @@
             <!-- Boas-vindas -->
             <div class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Olá, {{ $user->name }}!</h2>
-                <p class="text-gray-600">{{ t('dashboard_welcome') }}</p>
+                <p class="text-gray-600">{{ __('messages.info.dashboard_welcome') }}</p>
             </div>
 
             <!-- Grid Principal -->
@@ -59,7 +59,7 @@
                                         <span class="text-2xl">💰</span>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">{{ t('deposit') }}</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900">{{ __('messages.navigation.deposit') }}</h3>
                                         <p class="text-sm text-gray-500">Adicione dinheiro à sua conta</p>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                         <span class="text-2xl">💸</span>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">{{ t('transfer') }}</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900">{{ __('messages.navigation.transfer') }}</h3>
                                         <p class="text-sm text-gray-500">Envie dinheiro para outros usuários</p>
                                     </div>
                                 </div>
@@ -211,7 +211,7 @@
                                             class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ $user->type === 'common' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-purple-100 text-purple-800 border border-purple-200' }}">
                                             <span
                                                 class="w-2 h-2 rounded-full mr-2 {{ $user->type === 'common' ? 'bg-blue-500' : 'bg-purple-500' }}"></span>
-                                            {{ $user->type === 'common' ? t_role('common-user') : t_role('merchant') }}
+                                            {{ $user->type === 'common' ? __('messages.roles.common-user') : __('messages.roles.merchant') }}
                                         </span>
                                     </div>
                                 </div>

@@ -82,6 +82,10 @@ test('cannot transfer to self', function () {
 });
 
 test('authorization service failure', function () {
+    // Temporariamente mudar o ambiente para não simular autorização
+    $originalEnv = app()->environment();
+    app()->instance('env', 'production');
+    
     Http::fake([
         'util.devi.tools/api/v2/authorize' => Http::response(['message' => 'Não autorizado'], 200),
     ]);
@@ -96,9 +100,16 @@ test('authorization service failure', function () {
 
     expect($result['success'])->toBeFalse();
     expect($result['message'])->toBe('Transferência não autorizada pelo serviço externo.');
+    
+    // Restaurar o ambiente original
+    app()->instance('env', $originalEnv);
 });
 
 test('authorization service unavailable', function () {
+    // Temporariamente mudar o ambiente para não simular autorização
+    $originalEnv = app()->environment();
+    app()->instance('env', 'production');
+    
     Http::fake([
         'util.devi.tools/api/v2/authorize' => Http::response([], 500),
     ]);
@@ -113,6 +124,9 @@ test('authorization service unavailable', function () {
 
     expect($result['success'])->toBeFalse();
     expect($result['message'])->toBe('Serviço de autorização indisponível.');
+    
+    // Restaurar o ambiente original
+    app()->instance('env', $originalEnv);
 });
 
 test('get user transaction history', function () {

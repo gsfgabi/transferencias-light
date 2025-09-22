@@ -44,10 +44,11 @@ class SendTransferNotification implements ShouldQueue
             return;
         }
 
-        $notificationServiceUrl = 'https://util.devi.tools/api/v1/notify';
+        $notificationServiceUrl = config('services.notification.url');
+        $timeout = config('services.notification.timeout');
         
         try {
-            $response = Http::timeout(10)->post($notificationServiceUrl, [
+            $response = Http::timeout($timeout)->post($notificationServiceUrl, [
                 'payee_email' => $this->payee->email,
                 'amount' => $this->amount,
                 'sender_name' => $this->senderName,

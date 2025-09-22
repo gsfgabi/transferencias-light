@@ -210,7 +210,7 @@ class User extends Authenticatable
      */
     public function canSendMoney(): bool
     {
-        return $this->isCommonUser();
+        return $this->hasRole('common-user');
     }
 
     /**

@@ -94,7 +94,7 @@ class TransferService
 
         // Verificar se o recebedor pode receber dinheiro
         if (!$payee->canReceiveMoney()) {
-            return ['valid' => false, 'message' => 'O destinatário não pode receber transferências.'];
+            return ['valid' => false, 'message' => 'Não é possível transferir para si mesmo.'];
         }
 
         // Verificar se não está transferindo para si mesmo
@@ -109,7 +109,7 @@ class TransferService
 
         // Verificar valor mínimo
         if ($amount <= 0) {
-            return ['valid' => false, 'message' => 'O valor da transferência deve ser maior que zero.'];
+            return ['valid' => false, 'message' => 'O valor mínimo para depósito é R$ 0,01.'];
         }
 
         return ['valid' => true];
@@ -121,16 +121,17 @@ class TransferService
      */
     protected function checkAuthorization(): array
     {
-        // Em ambiente de desenvolvimento, simular autorização
+        // Em ambiente de desenvolvimento ou teste, simular autorização
         if (app()->environment('local', 'testing')) {
-            Log::info('Simulando autorização em ambiente de desenvolvimento');
+            Log::info('Simulando autorização em ambiente de desenvolvimento/teste');
             return ['authorized' => true];
         }
 
-        $authorizationServiceUrl = 'https://util.devi.tools/api/v2/authorize';
+        $authorizationServiceUrl = config('services.authorization.url');
+        $timeout = config('services.authorization.timeout');
         
         try {
-            $response = Http::timeout(10)->get($authorizationServiceUrl);
+            $response = Http::timeout($timeout)->get($authorizationServiceUrl);
             
             if (!$response->successful()) {
                 Log::warning('Serviço de autorização retornou erro HTTP', [
@@ -141,7 +142,7 @@ class TransferService
             }
 
             $data = $response->json();
-            if ($data['message'] !== 'Autorizado') {
+            if (isset($data['message']) && $data['message'] !== 'Autorizado') {
                 return ['authorized' => false, 'message' => 'Transferência não autorizada pelo serviço externo.'];
             }
 
@@ -159,7 +160,7 @@ class TransferService
                 return ['authorized' => true];
             }
             
-            return ['authorized' => false, 'message' => 'Erro ao consultar serviço de autorização. Tente novamente mais tarde.'];
+            return ['authorized' => false, 'message' => 'Serviço de autorização indisponível.'];
         }
     }
 

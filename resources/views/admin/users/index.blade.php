@@ -29,31 +29,31 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
             <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('filters.search_by_name_or_email') }}</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('messages.filters.search_by_name_or_email') }}</label>
                     <input type="text" 
                            name="search" 
                            value="{{ request('search') }}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                           placeholder="{{ t('filters.type_to_search') }}">
+                           placeholder="{{ __('messages.filters.type_to_search') }}">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('filters.filter_by_type') }}</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('messages.filters.filter_by_type') }}</label>
                     <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">{{ t('filters.all_types') }}</option>
-                        <option value="common-user" {{ request('type') == 'common-user' ? 'selected' : '' }}>{{ t_role('common-user') }}</option>
-                        <option value="merchant" {{ request('type') == 'merchant' ? 'selected' : '' }}>{{ t_role('merchant') }}</option>
-                        <option value="admin" {{ request('type') == 'admin' ? 'selected' : '' }}>{{ t_role('admin') }}</option>
-                        <option value="support" {{ request('type') == 'support' ? 'selected' : '' }}>{{ t_role('support') }}</option>
-                        <option value="user" {{ request('type') == 'user' ? 'selected' : '' }}>{{ t_role('user') }}</option>
+                        <option value="">{{ __('messages.filters.all_types') }}</option>
+                        <option value="common-user" {{ request('type') == 'common-user' ? 'selected' : '' }}>{{ __('messages.roles.common-user') }}</option>
+                        <option value="merchant" {{ request('type') == 'merchant' ? 'selected' : '' }}>{{ __('messages.roles.merchant') }}</option>
+                        <option value="admin" {{ request('type') == 'admin' ? 'selected' : '' }}>{{ __('messages.roles.admin') }}</option>
+                        <option value="support" {{ request('type') == 'support' ? 'selected' : '' }}>{{ __('messages.roles.support') }}</option>
+                        <option value="user" {{ request('type') == 'user' ? 'selected' : '' }}>{{ __('messages.roles.user') }}</option>
                     </select>
                 </div>
                 <div class="flex items-end space-x-2">
                     <button type="submit" class="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
-                        {{ t('filters.filter') }}
+                        {{ __('messages.filters.filter') }}
                     </button>
                     @if(request('search') || request('type'))
                         <a href="{{ route('admin.users.index') }}" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors text-sm font-medium text-center">
-                            {{ t('filters.clear') }}
+                            {{ __('messages.filters.clear') }}
                         </a>
                     @endif
                 </div>
@@ -64,9 +64,9 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900">
-                    {{ t('users') }} 
+                    {{ __('messages.navigation.users') }} 
                     @if($users->total() > 0)
-                        ({{ $users->total() }} {{ t('filters.results_found') }})
+                        ({{ $users->total() }} {{ __('messages.filters.results_found') }})
                     @endif
                 </h3>
             </div>
@@ -75,11 +75,11 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('table.user') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('table.type') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('table.balance') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('table.created_at') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ t('table.actions') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('messages.table.user') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('messages.table.type') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('messages.table.balance') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('messages.table.created_at') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('messages.table.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -103,7 +103,7 @@
                                                    ($role->name === 'common-user' ? 'bg-blue-100 text-blue-800' :
                                                    ($role->name === 'merchant' ? 'bg-purple-100 text-purple-800' :
                                                    ($role->name === 'support' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'))) }}">
-                                                {{ t_role($role->name) }}
+                                                {{ __('messages.roles.' . $role->name) }}
                                             </span>
                                         @endforeach
                                     </td>
@@ -146,12 +146,12 @@
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.709M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('filters.no_results') }}</h3>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">{{ __('messages.filters.no_results') }}</h3>
                     <p class="mt-1 text-sm text-gray-500">
                         @if(request('search') || request('type'))
-                            {{ t('filters.try_different_filters') }}
+                            {{ __('messages.filters.try_different_filters') }}
                         @else
-                            {{ t('filters.no_users_yet') }}
+                            {{ __('messages.filters.no_users_yet') }}
                         @endif
                     </p>
                 </div>

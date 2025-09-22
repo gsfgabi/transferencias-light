@@ -5,7 +5,7 @@ use App\Models\Wallet;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
-use App\Livewire\TransferForm;
+use App\Livewire\Transfer\TransferFormComponent;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -36,9 +36,9 @@ test('complete transfer flow', function () {
     $this->actingAs($sender);
 
     // Test the Livewire component
-    $component = Livewire::test(TransferForm::class)
-        ->set('payee_email', 'maria@example.com')
-        ->set('amount', 25.00)
+    $component = Livewire::test(TransferFormComponent::class)
+        ->set('form.payee_email', 'maria@example.com')
+        ->set('form.amount', 25.00)
         ->call('transfer');
 
     // Assert success
@@ -73,28 +73,28 @@ test('transfer validation errors', function () {
     $this->actingAs($sender);
 
     // Test invalid email
-    $component = Livewire::test(TransferForm::class)
-        ->set('payee_email', 'invalid-email')
-        ->set('amount', 25.00)
+    $component = Livewire::test(TransferFormComponent::class)
+        ->set('form.payee_email', 'invalid-email')
+        ->set('form.amount', 25.00)
         ->call('transfer');
 
-    $component->assertHasErrors(['payee_email']);
+    $component->assertHasErrors(['form.payee_email']);
 
     // Test insufficient amount
-    $component = Livewire::test(TransferForm::class)
-        ->set('payee_email', 'maria@example.com')
-        ->set('amount', 0)
+    $component = Livewire::test(TransferFormComponent::class)
+        ->set('form.payee_email', 'maria@example.com')
+        ->set('form.amount', 0)
         ->call('transfer');
 
-    $component->assertHasErrors(['amount']);
+    $component->assertHasErrors(['form.amount']);
 
     // Test transferring to self
-    $component = Livewire::test(TransferForm::class)
-        ->set('payee_email', 'joao@example.com')
-        ->set('amount', 25.00)
+    $component = Livewire::test(TransferFormComponent::class)
+        ->set('form.payee_email', 'joao@example.com')
+        ->set('form.amount', 25.00)
         ->call('transfer');
 
-    $component->assertHasErrors(['payee_email']);
+    $component->assertHasErrors(['form.payee_email']);
 });
 
 test('merchant cannot transfer', function () {
@@ -117,15 +117,19 @@ test('merchant cannot transfer', function () {
     // Authenticate the merchant
     $this->actingAs($merchant);
 
-    $component = Livewire::test(TransferForm::class)
-        ->set('payee_email', 'maria@example.com')
-        ->set('amount', 25.00)
-        ->call('transfer');
+    $component = Livewire::test(TransferFormComponent::class)
+        ->set('form.payee_email', 'maria@example.com')
+        ->set('form.amount', 25.00)
+        ->call('confirmTransfer');
 
-    $component->assertSee('Lojistas só podem receber transferências, não podem enviar dinheiro.');
+    $component->assertSee('Lojistas não podem realizar transferências.');
 });
 
 test('authorization service failure', function () {
+    // Temporariamente mudar o ambiente para não simular autorização
+    $originalEnv = app()->environment();
+    app()->instance('env', 'production');
+    
     Http::fake([
         'util.devi.tools/api/v2/authorize' => Http::response(['message' => 'Não autorizado'], 200),
     ]);
@@ -144,12 +148,15 @@ test('authorization service failure', function () {
     // Authenticate the sender
     $this->actingAs($sender);
 
-    $component = Livewire::test(TransferForm::class)
-        ->set('payee_email', 'maria@example.com')
-        ->set('amount', 25.00)
+    $component = Livewire::test(TransferFormComponent::class)
+        ->set('form.payee_email', 'maria@example.com')
+        ->set('form.amount', 25.00)
         ->call('transfer');
 
     $component->assertSee('Transferência não autorizada pelo serviço externo.');
+    
+    // Restaurar o ambiente original
+    app()->instance('env', $originalEnv);
 
     // Check that balances weren't changed
     $sender->refresh();

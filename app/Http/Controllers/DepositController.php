@@ -13,13 +13,9 @@ class DepositController extends Controller
 {
     public function show()
     {
-        $user = Auth::user();
-        
-        if (!$user) {
-            return redirect()->route('login');
-        }
-        
-        return view('livewire.deposit-form', ['user' => $user]);
+        return view('deposit', [
+            'component' => \App\Livewire\Deposit\DepositFormComponent::class
+        ]);
     }
 
 }

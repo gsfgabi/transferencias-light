@@ -56,6 +56,12 @@ return [
         'no_transactions' => 'Nenhuma transação encontrada.',
         'loading' => 'Carregando...',
         'processing' => 'Processando...',
+        'transfer_description' => 'Envie dinheiro para outros usuários',
+        'deposit_description' => 'Adicione dinheiro à sua conta',
+        'transfer_summary' => 'Transferir :amount para :recipient',
+        'deposit_summary' => 'Depositar :amount. Novo saldo: :new_balance',
+        'unknown_recipient' => 'Destinatário desconhecido',
+        'view_only' => 'Este formulário é apenas para visualização.',
     ],
 
     // Títulos e labels
@@ -172,6 +178,7 @@ return [
         'admin' => 'Administrador',
         'support' => 'Suporte',
         'common_user' => 'Usuário Comum',
+        'common-user' => 'Usuário Comum',
         'merchant' => 'Lojista',
         'user' => 'Usuário Básico',
     ],
@@ -184,6 +191,9 @@ return [
         'merchant_cannot_transfer' => 'Lojistas só podem receber transferências, não podem enviar dinheiro.',
         'user_info' => 'Suas Informações',
         'balance' => 'Saldo',
+        'restriction' => 'Restrição',
+        'restricted_access' => 'Acesso Restrito',
+        'error' => 'Erro',
     ],
 
     // Permissões

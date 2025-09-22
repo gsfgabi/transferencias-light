@@ -29,17 +29,17 @@
                     @endcan
                     @can('admin.users.view')
                         <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.users.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
-                            {{ t('users') }}
+                            {{ __('messages.navigation.users') }}
                         </a>
                     @endcan
                     @can('admin.reports.view')
                         <a href="{{ route('admin.reports') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.reports') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
-                            {{ t('reports') }}
+                            {{ __('messages.navigation.reports') }}
                         </a>
                     @endcan
                     @can('admin.permissions.view')
                         <a href="{{ route('admin.permissions.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('admin.permissions.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300' }}">
-                            {{ t('permissions') }}
+                            {{ __('messages.navigation.permissions') }}
                         </a>
                     @endcan
                 </div>
@@ -75,7 +75,7 @@
                             <form method="POST" action="{{ route('logout') }}" class="w-full">
                                 @csrf
                                 <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                    {{ t('logout') }}
+                                    {{ __('messages.navigation.logout') }}
                                 </button>
                             </form>
                         </div>
@@ -113,17 +113,17 @@
             @endcan
             @can('admin.users.view')
                 <a href="{{ route('admin.users.index') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.users.*') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
-                    {{ t('users') }}
+                    {{ __('messages.navigation.users') }}
                 </a>
             @endcan
             @can('admin.reports.view')
                 <a href="{{ route('admin.reports') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.reports') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
-                    {{ t('reports') }}
+                    {{ __('messages.navigation.reports') }}
                 </a>
             @endcan
             @can('admin.permissions.view')
                 <a href="{{ route('admin.permissions.index') }}" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.permissions.*') ? 'bg-indigo-50 border-indigo-400 text-indigo-700' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300' }}">
-                    {{ t('permissions') }}
+                    {{ __('messages.navigation.permissions') }}
                 </a>
             @endcan
         </div>
@@ -140,7 +140,7 @@
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                        {{ t('logout') }}
+                        {{ __('messages.navigation.logout') }}
                     </button>
                 </form>
             </div>
