@@ -8,7 +8,7 @@
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <h1 class="text-2xl font-bold text-gray-900">{{ __('messages.app_name') }}</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">{{ __('messages.titles.app_name') }}</h1>
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
@@ -144,7 +144,7 @@
                                                 </p>
                                                 <span
                                                     class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                                    {{ ucfirst($transaction->status) }}
+                                                    {{ __('messages.status.' . $transaction->status) }}
                                                 </span>
                                             </div>
                                         </div>

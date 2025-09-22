@@ -126,7 +126,7 @@
                                                 {{ $transaction->sender_id === $user->id ? '-' : '+' }}R$ {{ number_format($transaction->amount, 2, ',', '.') }}
                                             </p>
                                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : ($transaction->status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                                {{ ucfirst($transaction->status) }}
+                                                {{ __('messages.status.' . $transaction->status) }}
                                             </span>
                                         </div>
                                     </div>
